@@ -36,3 +36,12 @@ for i in range(5):
     choice(change, player2)
 for arrays in array:
     print(arrays)
+
+
+class Player:
+    def __init__(self, name, score, number):
+        self.name = name
+        self.score = score
+        self.number = number
+    def get_att(self):
+        return (self.name, self.score, self.number)
