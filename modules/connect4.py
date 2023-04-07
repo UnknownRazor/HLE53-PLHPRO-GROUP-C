@@ -146,4 +146,4 @@ for arrays in array:
 if(won == None):
     print("Ισοπαλία")
 else:
-    print(won, "is the", " winner")
+    print(won, "is the", "winner")
