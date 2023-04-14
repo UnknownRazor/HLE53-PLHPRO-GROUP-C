@@ -11,13 +11,13 @@ array = [[0, 0, 0, 0, 0, 0, 0],
          ]
 
 
-def findpos(user_choice):
+def findpos(user_choice, array):
     counter = 0
     for arrays in array:
         if(arrays[user_choice] == 1 or arrays[user_choice] == 2):
             break
         else:
-            counter+=1
+            counter += 1
     if counter == 0:
         counter = - 1
     return counter
@@ -42,6 +42,22 @@ class Player:
     def get_att(self):
         return (self.name, self.score, self.wins, self.loss, self.draws)
 
+
+def winner(grid):
+    win = horizontal_four(grid)
+    if(win):
+        return win
+    win = vertical_four(grid)
+    if (win):
+        return win
+    win = diagonal_four(grid)
+    if (win):
+        return win
+    win = anti_diagonal_four(grid)
+    if (win):
+        return win
+
+
 # Ελέγχει αν υπάρχουν 4 όμοιες θέσεις οριζόντια
 def horizontal_four(grid):
     # για κάθε γραμμή (0 έως 5)
@@ -61,19 +77,7 @@ def horizontal_four(grid):
     return None # δε βρέθηκε νικητής
 
 
-def winner(grid):
-    win = horizontal_four(grid)
-    if(win):
-        return win
-    win = vertical_four(grid)
-    if (win):
-        return win
-    win = diagonal_four(grid)
-    if (win):
-        return win
-    win = anti_diagonal_four(grid)
-    if (win):
-        return win
+
 
 
 
@@ -133,10 +137,10 @@ def anti_diagonal_four(grid):
 
 for i in range(21):
     user_choice = randrange(0, 7)
-    change = findpos(user_choice)
+    change = findpos(user_choice, array)
     choice(change, player)
     user_choice = randrange(0, 7)
-    change = findpos(user_choice)
+    change = findpos(user_choice, array)
     choice(change, player2)
     won = (winner(array))
     if(won):
