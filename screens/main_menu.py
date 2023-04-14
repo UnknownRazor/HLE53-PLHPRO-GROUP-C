@@ -56,8 +56,6 @@ class MainMenu(Tk):
                     else:
                         cursor.execute("INSERT INTO users (username, wins, draws, losses) VALUES (?, ?, ?, ?)",(username_is, 0, 0, 0))
                         sqliteConnection.commit()
-                    record = cursor.fetchall()
-                    print("SQLite Database Version is: ", record)
                     cursor.close()
 
                 except sqlite3.Error as error:
