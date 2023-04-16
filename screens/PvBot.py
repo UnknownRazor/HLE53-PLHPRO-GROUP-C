@@ -9,7 +9,7 @@ class pveScreen(Tk):
         root.geometry("1280x640")
         root.iconbitmap('../assets/logo.ico')
         font_fam = ("Roboto", 18, "bold")
-        font_fam2 = ("Roboto", 16, "bold")
+        font_fam2 = ("Roboto", 14, "bold")
         bg = PhotoImage(file="../assets/bg.png")
         # canvas main menu
         # --------------------------------------------------------------------------------------------------------------#
