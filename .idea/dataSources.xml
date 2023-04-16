@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:SQLite_Python.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="connect4_PythonDB" uuid="a3f3a837-3757-4994-bdfe-ea3f9ef4a5d3">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Lefteris\PycharmProjects\HLE53-PLHPRO-GROUP-C\db\connect4_PythonDB.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

@@ -32,13 +32,12 @@ def choice(change, player):
 
 
 class Player:
-    def __init__(self, name, number, wins, loss, draws):
+    def __init__(self, name, wins, loss, draws):
         self.name = name
         self.wins = wins
         self.loss = loss
         self.draws = draws
         self.score = wins - loss
-        self.number = number
     def get_att(self):
         return (self.name, self.score, self.wins, self.loss, self.draws)
 
@@ -134,20 +133,21 @@ def anti_diagonal_four(grid):
                 winner = grid[row][column]
                 return winner
     return None  # δε βρέθηκε νικητής
-
-for i in range(21):
-    user_choice = randrange(0, 7)
-    change = findpos(user_choice, array)
-    choice(change, player)
-    user_choice = randrange(0, 7)
-    change = findpos(user_choice, array)
-    choice(change, player2)
-    won = (winner(array))
-    if(won):
-        break
-for arrays in array:
-    print(arrays)
-if(won == None):
-    print("Ισοπαλία")
-else:
-    print(won, "is the", "winner")
+def test(array):
+    global player, player2
+    for i in range(21):
+        user_choice = randrange(0, 7)
+        change = findpos(user_choice, array)
+        choice(change, player)
+        user_choice = randrange(0, 7)
+        change = findpos(user_choice, array)
+        choice(change, player2)
+        won = (winner(array))
+        if(won):
+            break
+    for arrays in array:
+        print(arrays)
+    if(won == None):
+        print("Ισοπαλία")
+    else:
+        print(won, "is the", "winner")
