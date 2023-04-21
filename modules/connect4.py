@@ -10,6 +10,19 @@ array = [[0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0],
          ]
 
+def array_maker(size):
+    array = []
+    while True:
+        count = 0
+        arrays = []
+        while count < size:
+            arrays.append(0)
+            count += 1
+        array.append(arrays)
+        if len(array) == size:
+            break
+    return array
+
 
 def findpos(user_choice, array):
     counter = 0
@@ -22,7 +35,7 @@ def findpos(user_choice, array):
         counter = - 1
     return counter
 
-def choice(change, player):
+def choice(change, player, user_choice):
     if change == - 1:
         print("Column is full make another choice")
     if change != - 1:

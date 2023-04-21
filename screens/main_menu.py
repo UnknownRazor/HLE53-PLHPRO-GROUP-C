@@ -9,9 +9,10 @@ sys.path.insert(0, "..\\modules")
 
 import connect4 as c4
 
-
+size1 = 7
 
 class MainMenu(Tk):
+    global size1
     def __init__(self):
         self.username = None
         root = tk.Tk()
@@ -20,12 +21,13 @@ class MainMenu(Tk):
         font_fam = ("Roboto", 18, "bold")
         font_fam2 = ("Roboto", 16, "bold")
         bg = PhotoImage(file="../assets/bg.png")
+        last_obj = None
         # canvas main menu
         # --------------------------------------------------------------------------------------------------------------#
         root.title('Connect 4 App - ΠΛΗΠΡΟ/ΗΛΕ53 - Main Menu')
         canvas1 = Canvas(root, width=1280, height=640)
         button = tk.Button(root, text='PvP', bd=3, width=10, command=lambda: [self.pvp_clicked()], font=font_fam)
-        button1 = tk.Button(root, text='PvE', bd=3, width=10, command=lambda: [self.pve_clicked(root)], font=font_fam)
+        button1 = tk.Button(root, text='PvE', bd=3, width=10, command=lambda: [self.pve_clicked(canvas1, root, size1)], font=font_fam)
         button2 = tk.Button(root, text='Exit', bd=3, width=10, command=root.destroy, font=font_fam)
         menu_buttons = (button, button1, button2)
 
@@ -83,6 +85,7 @@ class MainMenu(Tk):
         root.mainloop()
 
     def create_main_menu(self, canvas1, bg, button_list, canvas):
+        canvas.delete("all")
         canvas.destroy()
         user = self.get_user()
         font_fam = ("Roboto", 18, "bold")
@@ -126,10 +129,13 @@ class MainMenu(Tk):
             button_canvas = canvas1.create_window(x, y, anchor="nw", window=button)
             y+=70
 
-    def pve_clicked(self,root):
+    def pve_clicked(self, canvas1, root, size):
+        canvas1.delete("all")
         root.destroy()
         user = self.username
-        pve_screen = PvBot.pveScreen(user)
+        pve_screen = PvBot.pveScreen(user, size)
+        bg = PhotoImage(file="../assets/bg.png")
+        bg_canvas = pve_screen.canvas.create_image(0, 0, image=bg, anchor="nw")
 
     def ranking_table(self):
         users = []
