@@ -54,4 +54,4 @@ while True:
         else:
             player = 1
     else:
-        print("Invalid move. Try again.") 
+        print("Invalid move. Try again.")
