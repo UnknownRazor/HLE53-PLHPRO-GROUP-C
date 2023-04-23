@@ -11,47 +11,43 @@ def print_board(board):
         print(row)
 
 def findpos(user_choice, player):
-    counter = 0
     for row in reversed(array):
         if row[user_choice] == 0:
             row[user_choice] = player
             return True
     return False
 
-player = 1
 
-while True:
-    # Player 1's turn
+def play(player):
     while True:
-        print_board(array)
-        user_choice = int(input("Player 1, enter column (1-7): ")) - 1
+        try:
+            print_board(array)
+            user_choice = int(input(f"Player {player}, enter column (1-7): ")) - 1
+        except ValueError:
+            print ("\n Invalid input. Try again. \n")
+            continue
         if (user_choice>=0 and user_choice<=6):
             break
         else:
             print ("\n invalid column \n")
+            continue
     if findpos(user_choice, player):
         if player == 1:
             player = 2
         else:
             player = 1
     else:
-        print("Invalid move. Try again.")
+        print("\n Invalid move. Try again. \n")
+        return False
+    return True
+
+player = 1
+while True:
+         if play(player):
+             player = 2
+         if play(player):
+             player = 1
+         
 
     # Έλεγχος για νίκη
     # (code to check for four in a row in any direction)
-
-    # Player 2's turn
-    while True:
-        print_board(array)
-        user_choice = int(input("Player 2, enter column (1-7): ")) - 1
-        if (user_choice>=0 and user_choice<=6):
-            break
-        else:
-            print ("\n invalid column \n")
-    if findpos(user_choice, player):
-        if player == 1:
-            player = 2
-        else:
-            player = 1
-    else:
-        print("Invalid move. Try again.")
