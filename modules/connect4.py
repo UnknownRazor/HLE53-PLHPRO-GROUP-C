@@ -1,166 +1,190 @@
 from random import randrange
-
-player = 1
-player2 = 2
-array = [[0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         ]
-
-def array_maker(size):
-    array = []
-    while True:
-        count = 0
-        arrays = []
-        while count < size:
-            arrays.append(0)
-            count += 1
-        array.append(arrays)
-        if len(array) == size:
-            break
-    return array
+from winner import game_over
+from player import Player
 
 
-def findpos(user_choice, array):
+# Δημιουργία και αρχικοποίηση ταμπλό
+def create_grid():
+    # 6 γραμμές x 7 στήλες, αρχικοποίηση σε 0
+    empty_grid = [[0 for column in range(7)] for row in range(6)]
+    return empty_grid
+
+
+# Εμφάνιση ταμπλό παιχνιδιού
+def print_grid(grid):
+    # εμφάνιση γραμμών, η μία κάτω από την άλλη
+    for row in grid:
+        print(row)
+
+
+def find_position(array, user_choice):
     counter = 0
     for arrays in array:
-        if(arrays[user_choice] == 1 or arrays[user_choice] == 2):
+        if arrays[user_choice] == 1 or arrays[user_choice] == 2:
             break
         else:
             counter += 1
-    if counter == 0:
-        counter = - 1
-    return counter
-
-def choice(change, player, user_choice):
-    if change == - 1:
-        print("Column is full make another choice")
-    if change != - 1:
-        array[change-1][user_choice] = player
+    return counter-1
 
 
+# Επιλογή στήλης που θα αφήσει το πιόνι ο παίκτης
+def choose_column():
+    # η στήλη πρέπει να είναι ακέραιος αριθμός (0-6)
+    while True:
+        try:
+            column = int(input("Choose a Column: "))-1
+            # αν πληκτρολόγησε αριθμό που δεν αντιστοιχεί σε στήλη
+            if column not in range(7):
+                print("This Column doesn't exist!")
+                continue
+        except ValueError:
+            # δεν πληκτρολόγησε ακέραιο
+            print("Wrong input!")
+            continue
+        return column
 
 
-class Player:
-    def __init__(self, name, wins, loss, draws):
-        self.name = name
-        self.wins = wins
-        self.loss = loss
-        self.draws = draws
-        self.score = wins - loss
-    def get_att(self):
-        return (self.name, self.score, self.wins, self.loss, self.draws)
+# Επιλογή θέσης από τον παίκτη και τοποθέτηση του πιονιού
+def player_turn(grid, player):
+    # ο παίκτης επιλέγει στήλη
+    player_column = choose_column()
+    # εύρεση κενής θέσης (γραμμής)
+    player_row = find_position(grid, player_column)
+    # αν η στήλη είναι γεμάτη, διαλέγει άλλη στήλη
+    while player_row == -1:
+        print("This Column is Full!")
+        player_column = choose_column()
+        player_row = find_position(grid, player_column)
+    # ο παίκτης καταλαμβάνει την κενή θέση
+    grid[player_row][player_column] = player
+    return
 
 
-def winner(grid):
-    win = horizontal_four(grid)
-    if(win):
-        return win
-    win = vertical_four(grid)
-    if (win):
-        return win
-    win = diagonal_four(grid)
-    if (win):
-        return win
-    win = anti_diagonal_four(grid)
-    if (win):
-        return win
-
-
-# Ελέγχει αν υπάρχουν 4 όμοιες θέσεις οριζόντια
-def horizontal_four(grid):
-    # για κάθε γραμμή (0 έως 5)
-    # ελέγχει τις θέσεις των στηλών (0 έως 3),(1 έως 4),(2 έως 5),(3 έως 6)
-    for row in range(0, 6):
-        #  η αρχική στήλη της τετράδας column
-        for column in range(0, 4):
-            # αν 4 διαδοχικές θέσεις μιας γραμμής είναι ίδιες
-            four_same = (grid[row][column] == grid[row][column + 1]) and \
-                        (grid[row][column + 1] == grid[row][column + 2]) and \
-                        (grid[row][column + 2] == grid[row][column + 3])
-            # αν οι 4 θέσεις δεν είναι κενές
-            if four_same and grid[row][column] != 0:
-                # επιστρέφει το νικητή
-                winner = grid[row][column]
-                return winner
-    return None # δε βρέθηκε νικητής
-
-
-
-
-
-
-# Ελέγχει αν υπάρχουν 4 όμοιες θέσεις κάθετα
-def vertical_four(grid):
-    # για κάθε στήλη (0 έως και 6)
-    # ελέγχει τις θέσεις των γραμμών (0 έως 3),(1 έως 4),(2 έως 5)
-    for column in range(0, 7):
-        # η αρχική γραμμή της τετράδας row
-        for row in range(0, 3):
-            # αν 4 διαδοχικές θέσεις μιας στήλης είναι ίδιες
-            four_same = (grid[row][column] == grid[row + 1][column]) and \
-                        (grid[row + 1][column] == grid[row + 2][column]) and \
-                        (grid[row + 2][column] == grid[row + 3][column])
-            # αν οι 4 θέσεις δεν είναι κενές
-            if four_same and grid[row][column] != 0:
-                # επιστρέφει το νικητή
-                winner = grid[row][column]
-                return winner
-    return None # δε βρέθηκε νικητής
-
-
-# Ελέγχει αν υπάρχουν 4 όμοιες θέσεις στις κυρίως διαγώνιους
-def diagonal_four(grid):
-    # για κάθε γραμμή που μπορεί να ξεκινήσει διαγώνιος (0 έως 2)
-    # ελέγχει τις διαδοχικές διαγώνιες θέσεις
-    for row in range(0, 3):
-        for column in range(0, 4):
-            # αν 4 διαδοχικές διαγώνιες θέσεις είναι ίδιες
-            four_same = (grid[row][column] == grid[row + 1][column + 1]) and \
-                        (grid[row + 1][column + 1] == grid[row + 2][column + 2]) and \
-                        (grid[row + 2][column + 2] == grid[row + 3][column + 3])
-            # αν οι 4 θέσεις δεν είναι κενές
-            if four_same and grid[row][column] != 0:
-                # επιστρέφει το νικητή
-                winner = grid[row][column]
-                return winner
-    return None  # δε βρέθηκε νικητής
-
-
-# Ελέγχει αν υπάρχουν 4 όμοιες θέσεις αντίθετες διαγώνιους
-def anti_diagonal_four(grid):
-    # για κάθε γραμμή που μπορεί να ξεκινήσει διαγώνιος (3 έως 5)
-    # ελέγχει τις αντίθετες διαδοχικές διαγώνιες θέσεις
-    for row in range(3, 6):
-        for column in range(0, 4):
-            # αν 4 διαδοχικές αντίθετες διαγώνιες θέσεις είναι ίδιες
-            four_same = (grid[row][column] == grid[row - 1][column + 1]) and \
-                        (grid[row - 1][column + 1] == grid[row - 2][column + 2]) and \
-                        (grid[row - 2][column + 2] == grid[row - 3][column + 3])
-            # αν οι 4 θέσεις δεν είναι κενές
-            if four_same and grid[row][column] != 0:
-                # επιστρέφει το νικητή
-                winner = grid[row][column]
-                return winner
-    return None  # δε βρέθηκε νικητής
-def test(array):
-    global player, player2
-    for i in range(21):
-        user_choice = randrange(0, 7)
-        change = findpos(user_choice, array)
-        choice(change, player)
-        user_choice = randrange(0, 7)
-        change = findpos(user_choice, array)
-        choice(change, player2)
-        won = (winner(array))
-        if(won):
+# Επιλογή τυχαίας θέσης από τον υπολογιστή και τοποθέτηση του πιονιού
+def easy(grid, player):
+    while True:
+        # ο υπολογιστής διαλέγει μια τυχαία στήλη
+        computer_column = randrange(0, 7)
+        # εύρεση κενής θέσης (γραμμής)
+        computer_row = find_position(grid, computer_column)
+        # αν υπάρχει κενή θέση
+        if computer_row != -1:
             break
-    for arrays in array:
-        print(arrays)
-    if(won == None):
-        print("Ισοπαλία")
+    # ο υπολογιστής καταλαμβάνει την κενή θέση
+    grid[computer_row][computer_column] = player
+    return
+
+
+# Παίκτης εναντίον παίκτη
+def pvp(grid, pl_1, pl_2):
+    print_grid(grid)
+    # όσο υπάρχουν κενές θέσεις στο ταμπλό
+    while not game_over(grid, pl_1, pl_2):
+        # παίζει ο παίκτης 1
+        print(f"---{pl_1.name}---")
+        player_turn(grid, pl_1.code)
+        print_grid(grid)
+        # έλεγχος αν συμπλήρωσε 4 όμοια
+        if game_over(grid, pl_1, pl_2):
+            return
+        # παίζει ο παίκτης 2
+        print(f"---{pl_2.name}---")
+        player_turn(grid, pl_2.code)
+        print_grid(grid)
+
+
+# Παίκτης εναντίον υπολογιστή
+def pve(grid, pl_1, pl_2):
+    print_grid(grid)
+    # όσο υπάρχουν κενές θέσεις στο ταμπλό
+    while not game_over(grid, pl_1, pl_2):
+        # παίζει ο παίκτης 1
+        print(f"---{pl_1.name}---")
+        player_turn(grid, pl_1.code)
+        print_grid(grid)
+        # έλεγχος αν συμπλήρωσε 4 όμοια
+        if game_over(grid, pl_1, pl_2):
+            return
+        # παίζει ο υπολογιστής
+        print(f"---{pl_2.name}---")
+        easy(grid, pl_2.code)
+        print_grid(grid)
+
+
+# Επιλογή είδους παιχνιδιού
+def mode():
+    while True:
+        try:
+            game_mode = int(input("Choose Game Mode| PVP (1) / PVE (2): "))
+            if game_mode != 1 and game_mode != 2:
+                print("For PVP 1, for PVE 2!")
+                continue
+        except ValueError:
+            # δεν πληκτρολόγησε ακέραιο
+            print("Wrong input!")
+            continue
+        return game_mode
+
+
+# Κυρίως παιχνίδι
+def play():
+    while True:
+        grid = create_grid()
+        if mode() == 1:
+            # εισαγωγή ονομάτων
+            new_name = input("Player 1! Insert name: ")
+            player_1 = Player(new_name, 1)
+            new_name = input("Player 2! Insert name: ")
+            player_2 = Player(new_name, 2)
+            pvp(grid, player_1, player_2)
+        else:
+            # εισαγωγή ονομάτων
+            new_name = input("Insert name: ")
+            player_1 = Player(new_name, 1)
+            player_2 = Player("Computer", 2)
+            pve(grid, player_1, player_2)
+        # παίζει ξανά
+        while True:
+            print("-------------------------------------")
+            play_again = input("Play again? (Y/N):")
+            print("-------------------------------------")
+            # ελέγχει το Input
+            if play_again not in ['Y', 'y', 'N', 'n']:
+                print("Wrong Input!")
+                continue
+            break
+        # τερματίζει το παιχνίδι
+        if play_again in ['N', 'n']:
+            return
+
+
+# Εμφάνιση στατιστικών παικτών
+def show_stats():
+    print("--------------- RANK ----------------")
+    print(f"{'Name':<20}{'Score':<7}{'Win':<7}{'Loss':<7}{'Draw':<7}")
+    for player in Player.player_list:
+        print(Player.get_att(player))
+    print("-------------------------------------")
+
+
+# Main
+print("------------- CONNECT 4 -------------")
+main_menu = "------------- Main Menu -------------\n1. Play\n2. Rank\n3. Settings\n4. Exit\nInsert Choice: "
+while True:
+    choice = input(main_menu)
+    if choice == '1':
+        # Παίζει
+        play()
+    elif choice == '2':
+        # Στατιστικά
+        show_stats()
+    elif choice == '3':
+        # Ρυθμίσεις
+        pass
+    elif choice == '4':
+        # Τερματισμός
+        print("Bye Bye!")
+        break
     else:
-        print(won, "is the", "winner")
+        # Λανθασμένη επιλογή
+        print("Wrong Input! Choose between 1 to 4!\n")
