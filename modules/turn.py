@@ -1,4 +1,3 @@
-import math
 import copy
 from winner import *
 from random import randrange
@@ -55,18 +54,18 @@ def possible_cols(grid):
 def calculate(boxes):
     score = 0
     # maximazing (αύξηση score ανάλογα με τα πιόνια)
-    if boxes.count(2) == 4:
+    if boxes.count(COMPUTER) == 4:
         score += 100
-    elif boxes.count(2) == 3:
+    elif boxes.count(COMPUTER) == 3:
         score += 50
-    elif boxes.count(2) == 2:
+    elif boxes.count(COMPUTER) == 2:
         score += 10
     # minimizing (μείωση score ανάλογα με τα πιόνια)
-    if boxes.count(1) == 4:
+    if boxes.count(PLAYER1) == 4:
         score -= 100
-    elif boxes.count(1) == 3:
+    elif boxes.count(PLAYER1) == 3:
         score -= 50
-    elif boxes.count(1) == 2:
+    elif boxes.count(PLAYER1) == 2:
         score -= 10
 
     return score
@@ -111,7 +110,7 @@ def minimax(grid, depth, maximizing_player):
         return evaluate(grid)
 
     if maximizing_player:   # υπολογιστής
-        value = -math.inf
+        value = -float('inf')
         for col in valid_locations:
             row = find_position(grid, col)
             b_copy = copy.deepcopy(grid)
@@ -120,7 +119,7 @@ def minimax(grid, depth, maximizing_player):
             value = max(value, new_score)
         return value
     else:   # minimazing player (παίκτης)
-        value = math.inf
+        value = float('inf')
         for col in valid_locations:
             row = find_position(grid, col)
             b_copy = copy.deepcopy(grid)
@@ -131,9 +130,9 @@ def minimax(grid, depth, maximizing_player):
 
 
 # Επιλογή θέσης(στήλης) βάση Minimax από τον υπολογιστή για τοποθέτηση του πιονιού
-def hard(grid):
+# depth : επίπεδο δυσκολίας
+def hard(grid, depth):
     computer_column = None
-    depth = 4    # επίπεδο δυσκολίας Minimax
     best_score = -float('inf')  # αρχικοποίηση στο μείον άπειρο
     # βρίσκει την καταλληλότερη στήλη για να τοποθετήσει το πιόνι
     for col in range(len(grid[0])):
@@ -163,15 +162,15 @@ def easy(grid):
     return computer_column
 
 
-
-
 # Επιλογή θέσης από τον υπολογιστή και τοποθέτηση του πιονιού
 def computer_turn(grid, level):
     # ο υπολογιστής επιλέγει level (easy ή hard)
     if level == '1':
         computer_column = easy(grid)
-    else:
-        computer_column = hard(grid)
+    elif level == '2':
+        computer_column = hard(grid, 1)
+    else:   # level = '3'
+        computer_column = hard(grid, 3)
     # εύρεση κενής θέσης (γραμμής)
     computer_row = find_position(grid, computer_column)
     # ο υπολογιστής καταλαμβάνει την κενή θέση
