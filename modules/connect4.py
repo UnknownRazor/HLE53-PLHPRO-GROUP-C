@@ -35,11 +35,16 @@ def findpos(user_choice, array):
         counter = - 1
     return counter
 
-def choice(change, player, user_choice):
+def choice(array, player, user_choice, button_array):
+    change = findpos(user_choice, array)
     if change == - 1:
         print("Column is full make another choice")
     if change != - 1:
+        print(array)
         array[change-1][user_choice] = player
+        print(array)
+        button = button_array[change-1][user_choice]
+        button.config(text=str(player))
 
 
 
