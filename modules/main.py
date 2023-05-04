@@ -6,7 +6,8 @@ EMPTY = 0
 PLAYER1 = 1
 PLAYER2 = 2
 COMPUTER = 2
-
+MAX_COL = 10
+MAX_ROW = 10
 
 # Δημιουργία και αρχικοποίηση ταμπλό σε 0
 def create_grid():
@@ -15,7 +16,7 @@ def create_grid():
     row_input = 6
     # επιλογή μεγέθους ταμπλό
     while True:
-        table_size = input("Choose Table size| Classic[6x7] (1) / Custom[5x5 - 20x20] (2): ")
+        table_size = input(f"Choose Table size| Classic[6x7] (1) / Custom[5x5 - {MAX_ROW}x{MAX_COL}] (2): ")
         if table_size not in ['1', '2']:
             print("For Classic 1, for Custom 2!")
             continue
@@ -26,8 +27,8 @@ def create_grid():
         while True:
             try:
                 col_input = int(input("Give Number of Columns: "))
-                if col_input not in range(5, 21):
-                    print("Columns number between 5 to 20")
+                if col_input not in range(5, MAX_COL+1):
+                    print(f"Columns number between 5 to {MAX_COL}")
                     continue
                 break
             except ValueError:
@@ -38,8 +39,8 @@ def create_grid():
         while True:
             try:
                 row_input = int(input("Give Number of Rows: "))
-                if row_input not in range(5, 21):
-                    print("Rows number between 5 to 20")
+                if row_input not in range(5, MAX_ROW+1):
+                    print(f"Rows number between 5 to {MAX_ROW}")
                     continue
                 break
             except ValueError:
@@ -109,9 +110,9 @@ def mode():
 # Επιλογή επιπέδου δυσκολίας παιχνιδιού
 def lvl():
     while True:
-        game_lvl = input("Choose Game Level| Easy (1) / Hard (2): ")
-        if game_lvl not in ['1', '2']:
-            print("For Easy 1, for Hard 2!")
+        game_lvl = input("Choose Game Level| Easy (1) / Normal (2) / Hard (3): ")
+        if game_lvl not in ['1', '2', '3']:
+            print("For Easy 1, for Normal 2 and for Hard 3!")
             continue
         return game_lvl
 
