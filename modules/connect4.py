@@ -40,12 +40,9 @@ def choice(array, player, user_choice, button_array):
     if change == - 1:
         print("Column is full make another choice")
     if change != - 1:
-        print(array)
         array[change-1][user_choice] = player
-        print(array)
-        button = button_array[change-1][user_choice]
+        button = button_array[change - 1][user_choice]
         button.config(text=str(player))
-
 
 
 

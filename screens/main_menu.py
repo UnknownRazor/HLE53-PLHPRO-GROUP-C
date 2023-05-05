@@ -7,7 +7,7 @@ import sys
 # Insert the path of modules folder
 sys.path.insert(0, "..\\modules")
 
-import connect4 as c4
+import modules.connect4 as c4
 
 size1 = 7
 

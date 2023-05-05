@@ -16,7 +16,7 @@ def button_clicked(button_id):
 
 
 def is_within_button(x, y, button_coords):
-    button_x1, button_y1, button_x2, button_y2 = button_coords
+    button_x1, button_x2, button_y1, button_y2 = button_coords
     if button_x1 <= x <= button_x2 and y >= button_y1 and y <= button_y2:
         return True
     return False
@@ -28,12 +28,15 @@ canvas.pack()
 
 bg_image = tk.PhotoImage(file="assets/bg.png")
 canvas.create_image(0, 0, image=bg_image, anchor="nw")
-
-button1_image = tk.PhotoImage(file="transparent_button.png")
+buttons = []
+for i in range(0,6):
+    button
+    buttons.append()
+button1_image = tk.PhotoImage(file="")
 button1_coords = (100, 100, 400, 400)
 canvas.create_image(button1_coords[0], button1_coords[1], image=button1_image, anchor="nw")
 
-button2_image = tk.PhotoImage(file="transparent_button.png")
+button2_image = tk.PhotoImage(file="")
 button2_coords = (400, 400, 500, 450)
 canvas.create_image(button2_coords[0], button2_coords[1], image=button2_image, anchor="nw")
 
@@ -50,9 +53,11 @@ image_width = canvas.bbox(image_id)[2] - canvas.bbox(image_id)[0]
 image_height = canvas.bbox(image_id)[3] - canvas.bbox(image_id)[1]
 canvas.coords(image_id, 400 - image_width / 2, 300 - image_height / 2)
 
-
-
-
+class InvisibleButton(tk):
+    def __init__(self, x, y,canvas):
+        button = tk.PhotoImage(file="")
+        self.button_coords = [x, x+70, y, y+70]
+        canvas.create_image(button2_coords[0], button2_coords[1], image=button, anchor="nw")
 def on_mouse_move(event):
     x, y = event.x, event.y
     if 60 < x < 480 and 60 < y < 480:
