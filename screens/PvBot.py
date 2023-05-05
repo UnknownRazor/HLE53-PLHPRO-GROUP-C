@@ -48,8 +48,9 @@ class pveScreen(Tk):
         button_array = play_list[1]
         photo_image = PhotoImage(file="../assets/pawn.png")
         image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
-        canvas1.coords(image_id, 400 - 100 / 2, 300 - 100 / 2)
+        canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
         canvas1.bind("<Button-1>", lambda event, buttons=menu_buttons, col_buttons=column_buttons: self.on_canvas_click(event, buttons, col_buttons, button_array))
+        canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
         root.mainloop()
     def create_button_array(self, size, canvas1, root, font_fam):
         buttons_array = []
@@ -110,6 +111,19 @@ class pveScreen(Tk):
     def button_clicked(self,button_id, button_array):
         print(f"Button {button_id} clicked!")
         c4.choice(array, 1, button_id, button_array)
+
+    def on_mouse_move(self,event, canvas1, image_id):
+        x, y = event.x, event.y
+        if 90 < x < 580 and 10 < y < 60:
+            # Show the image if the mouse is within the specified bounds
+            canvas1.itemconfig(image_id, state="normal")
+            # Move the image to follow the mouse
+            canvas1.coords(image_id, x/4, y/4)
+        else:
+            # Hide the image if the mouse is not within the specified bounds
+            canvas1.itemconfig(image_id, state="hidden")
+
+
 
 if __name__ == "__main__":
     pve = pveScreen("Hello", 7)
