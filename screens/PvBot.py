@@ -49,7 +49,7 @@ class pveScreen(Tk):
         photo_image = PhotoImage(file="../assets/pawn.png")
         image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
         canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
-        canvas1.bind("<Button-1>", lambda event, buttons=menu_buttons, col_buttons=column_buttons: self.on_canvas_click(event, buttons, col_buttons, button_array))
+        canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
         canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
         root.mainloop()
     def create_button_array(self, size, canvas1, root, font_fam):
