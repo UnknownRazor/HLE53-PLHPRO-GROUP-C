@@ -1,4 +1,5 @@
 from random import randrange
+import tkinter as tk
 
 player = 1
 player2 = 2
@@ -39,8 +40,15 @@ def choice(array, player, user_choice, button_array):
     change = findpos(user_choice, array)
     if change == - 1:
         print("Column is full make another choice")
-    if change != - 1:
+    else:
         array[change-1][user_choice] = player
+        if change != 0:
+            for buttons in range(0, change-1):
+                button = button_array[buttons][user_choice]
+                button.config(text=str(player))
+                tksleep(0.15)
+                button.config(text=str(0))
+
         button = button_array[change - 1][user_choice]
         button.config(text=str(player))
 
@@ -166,3 +174,12 @@ def test(array):
         print("Ισοπαλία")
     else:
         print(won, "is the", "winner")
+
+
+def tksleep(t):
+    'emulating time.sleep(seconds)'
+    ms = int(t*1000)
+    root = tk._get_default_root()
+    var = tk.IntVar(root)
+    root.after(ms, lambda: var.set(1))
+    root.wait_variable(var)
