@@ -8,16 +8,16 @@ PLAYER2 = 2
 COMPUTER = 2
 
 
-# Επιστρέφει την κατώτερη κενή θέση (γραμμή)
-# Αν είναι γεμάτες όλες οι θέσεις, επιστρέφει -1
-def find_position(grid, user_choice):
-    counter = 0
-    for row in grid:
-        if row[user_choice] == 1 or row[user_choice] == 2:
-            break
-        else:
-            counter += 1
-    return counter - 1
+# Εύρεση κατώτερης κενής θέσης
+def find_position(grid, selected_column):
+    # αναζήτηση στις γραμμές για την κατώτερη κενή θέση(0)
+    for row in range(len(grid)):
+        # αν βρεθεί γεμάτη θέση επιστρέφει την προηγούμενη γραμμή(κενή)
+        # αν ολόκληρη η στήλη είναι γεμάτη, επιστρέφει -1
+        if grid[row][selected_column] != 0:
+            return row-1
+    # αν ολόκληρη η στήλη είναι κενή επιστρέφει την τελευταία γραμμή
+    return 5
 
 
 # Επιλογή στήλης που θα αφήσει το πιόνι ο παίκτης
@@ -54,18 +54,18 @@ def possible_cols(grid):
 def calculate(boxes):
     score = 0
     # maximazing (αύξηση score ανάλογα με τα πιόνια)
-    if boxes.count(COMPUTER) == 4:
+    if boxes.count(2) == 4:
         score += 100
-    elif boxes.count(COMPUTER) == 3:
+    elif boxes.count(2) == 3:
         score += 50
-    elif boxes.count(COMPUTER) == 2:
+    elif boxes.count(2) == 2:
         score += 10
     # minimizing (μείωση score ανάλογα με τα πιόνια)
-    if boxes.count(PLAYER1) == 4:
+    if boxes.count(1) == 4:
         score -= 100
-    elif boxes.count(PLAYER1) == 3:
+    elif boxes.count(1) == 3:
         score -= 50
-    elif boxes.count(PLAYER1) == 2:
+    elif boxes.count(1) == 2:
         score -= 10
 
     return score
