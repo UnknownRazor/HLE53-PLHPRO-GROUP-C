@@ -1,6 +1,7 @@
 from player import Player
 from winner import game_over
 from turn import *
+from data import *
 
 EMPTY = 0
 PLAYER1 = 1
@@ -50,7 +51,6 @@ def create_grid():
     # δημιουργία ταμπλό
     empty_grid = [[EMPTY for column in range(col_input)] for row in range(row_input)]
     return empty_grid
-
 
 # Εμφάνιση ταμπλό παιχνιδιού
 def print_grid(grid):
@@ -121,20 +121,24 @@ def lvl():
 def play():
     while True:
         grid = create_grid()
-        if mode() == '1':
+        if mode() == '1':   # pvp
             # εισαγωγή ονομάτων
             new_name = input("Player 1! Insert name: ")
             player_1 = Player(new_name)
+            insert_table(player_1)
             new_name = input("Player 2! Insert name: ")
             player_2 = Player(new_name)
+            insert_table(player_2)
             winner = pvp(grid, player_1, player_2)
             update_stats(winner, player_1, player_2)
             print_winner(winner, player_1, player_2)
-        else:
+        else:   # pve
             # εισαγωγή ονόματος
             new_name = input("Insert name: ")
             player_1 = Player(new_name)
+            insert_table(player_1)
             player_2 = Player("Computer")
+            insert_table(player_2)
             winner = pve(grid, player_1, player_2, lvl())
             update_stats(winner, player_1, player_2)
             print_winner(winner, player_1, player_2)
@@ -156,14 +160,15 @@ def play():
 # Εμφάνιση στατιστικών παικτών
 def show_stats():
     print("--------------- RANK ----------------")
-    print(f"{'Name':<20}{'Score':<7}{'Games':<7}{'Win':<7}{'Loss':<7}{'Draw':<7}")
-    for player in Player.player_list:
-        print(player)
+    print(f"{'Name':<20}{'Games':<7}{'Wins':<7}{'Losses':<7}{'Draws':<7}{'ELO':<7}")
+    for user in ranking_table():
+        print(f"{user[0]:<20}{user[1]:<7}{user[2]:<7}{user[3]:<7}{user[4]:<7}{user[5]:<7}")
     print("-------------------------------------")
 
 
 # Main
 print("------------- CONNECT 4 -------------")
+create_table()
 main_menu = "------------- Main Menu -------------\n1. Play\n2. Rank\n3. Settings\n4. Exit\nInsert Choice: "
 while True:
     choice = input(main_menu)
@@ -183,3 +188,4 @@ while True:
     else:
         # Λανθασμένη επιλογή
         print("Wrong Input! Choose between 1 to 4!\n")
+
