@@ -1,3 +1,5 @@
+from data import *
+
 # len(grid)    : αριθμός γραμμών
 # len(grid[0]) : αριθμός στηλών
 
@@ -125,6 +127,8 @@ def update_stats(winner, player1, player2):
     elif winner == 0:
         player2.draw()
         player1.draw()
+    update_table(player1)
+    update_table(player2)
 
 
 # Εμφάνιση νικητή
