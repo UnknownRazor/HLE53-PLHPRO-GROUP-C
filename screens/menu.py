@@ -1,10 +1,13 @@
+import sqlite3
 import tkinter as tk
 from PIL import Image, ImageTk
 
 MAX_ROW = 10
 MAX_COL = 10
-lbl_font = ("Courier", 20, "bold")
+lbl_font = ("Courier", 24, "bold")
 btn_font = ("Courier", 12, "bold")
+stats_font = ("Courier", 14, "bold", "underline")
+boxes_font = ("Courier", 12, "bold")
 
 class MyApp(tk.Tk):
     def __init__(self):
@@ -17,7 +20,7 @@ class MyApp(tk.Tk):
         # δημιουργία παραθύρου
         self.title("Connect 4")
         self.iconbitmap("4.ico")
-        self.geometry("500x400")
+        self.geometry("600x550")
         self.resizable(width=False, height=False)
 
         # Δημιουργία Frames (μενού + υπο-μενού)
@@ -29,7 +32,8 @@ class MyApp(tk.Tk):
         self.rank_frame = RankFrame(self)   # κατάταξη
 
         # Τοποθέτηση των frames στο παράθυρο
-        all_frames = (self.main_frame, self.size_frame, self.custom_frame, self.vs_frame, self.table_frame, self.rank_frame)
+        all_frames = (self.main_frame, self.size_frame, self.custom_frame,
+                      self.vs_frame, self.table_frame, self.rank_frame)
         for frame in all_frames:
             frame.pack(fill=tk.BOTH, expand=True)
 
@@ -39,7 +43,8 @@ class MyApp(tk.Tk):
 
     def show_frame(self, frame):
         # κρύβει όλα τα frames και εμφανίζει αυτό που παίρνει σαν όρισμα
-        all_frames = (self.main_frame, self.size_frame, self.custom_frame, self.vs_frame, self.table_frame, self.rank_frame)
+        all_frames = (self.main_frame, self.size_frame, self.custom_frame,
+                      self.vs_frame, self.table_frame, self.rank_frame)
         for f in all_frames:
             f.pack_forget()
         frame.pack(fill=tk.BOTH, expand=True)
@@ -115,7 +120,7 @@ class CustomFrame(tk.Frame):
         self.column_label.configure(font=btn_font, background="#f44336")
         self.row_entry = tk.Entry(self, font=btn_font, width=5)
         self.column_entry = tk.Entry(self,font=btn_font, width=5)
-        self.ok_btn = tk.Button(self, padx=50, pady=10, text="OK", command=self.save_size)
+        self.ok_btn = tk.Button(self, padx=40, pady=10, text="OK", command=self.save_size)
         self.ok_btn.configure(font=btn_font, background="#f44336")
         self.back_btn = tk.Button(self, padx=50, pady=10, text="BACK",
                                    command=lambda: master.show_frame(master.size_frame))
@@ -162,7 +167,7 @@ class VsFrame(tk.Frame):
 
 class TableFrame(tk.Frame):
     def __init__(self, master, rows, columns):
-        super().__init__(master, bg='#ffd966')
+        super().__init__(master, bg='blue')
 
         self.rows = rows
         self.columns = columns
@@ -212,7 +217,7 @@ class TableFrame(tk.Frame):
     def create_grid(self):
         for i in range(1, self.rows + 1):
             for j in range(self.columns):
-                box_label = tk.Label(self, image=self.white)
+                box_label = tk.Label(self, image=self.white, borderwidth=0, highlightthickness=0)
                 box_label.grid(row=i, column=j)
 
     def play_red(self, col):
@@ -224,22 +229,51 @@ class TableFrame(tk.Frame):
         box_label.grid(row=self.current_row[col] - 1, column=col - 1)
 
 
+
+
 class RankFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg='#ffd966')
+        my_conn = sqlite3.connect('connect4.db')
 
-        # δημιουργία κεφαλίδας
-        self.rank_label = tk.Label(self, padx=50, pady=40, text="Rank")
-        self.rank_label.configure(font=lbl_font, background="#ffd966")
-        # δημιουργία κουμπιών μενού
-        self.back_btn = tk.Button(self, padx=50, pady=10, text="BACK",
-                                   command=lambda: master.show_frame(master.main_frame))
+        self.name = tk.Label(self, padx=25, pady=10, text='Name')
+        self.name.configure(font=stats_font, background="#ffd966")
+        self.games = tk.Label(self, padx=20, pady=10, text='Games')
+        self.games.configure(font=stats_font, background="#ffd966")
+        self.wins = tk.Label(self, padx=20, pady=10, text='Wins')
+        self.wins.configure(font=stats_font, background="#ffd966")
+        self.losses = tk.Label(self, padx=20, pady=10, text='Losses')
+        self.losses.configure(font=stats_font, background="#ffd966")
+        self.draws = tk.Label(self, padx=20, pady=10, text='Draws')
+        self.draws.configure(font=stats_font, background="#ffd966")
+        self.elo = tk.Label(self, padx=20, pady=10, text='ELO')
+        self.elo.configure(font=stats_font, background="#ffd966")
+        self.back_btn = tk.Button(self, padx=20, pady=10, text="BACK",
+                                  command=lambda: master.show_frame(master.main_frame))
         self.back_btn.configure(font=btn_font, background="#f44336")
 
+
+        # ταξινομημένοι παίκτες σύμφωνα με elo (πρώτοι 10)
+        top_players = my_conn.execute('''SELECT * from users ORDER BY -elo LIMIT 0,10''')
+
         # τοποθέτηση widgets στο παράθυρο
+        i = 1
+        for pl in top_players:
+            for j in range(len(pl)):
+                box = tk.Label(self, padx=15, pady=10, text=pl[j])
+                box.configure(font=boxes_font, background="#ffd966")
+                box.grid(row=i, column=j)
+            i = i + 1
+
         self.pack(fill=tk.BOTH, expand=True)
-        self.rank_label.pack()
-        self.back_btn.pack()
+        self.name.grid(row=0, column=0)
+        self.games.grid(row=0, column=1)
+        self.wins.grid(row=0, column=2)
+        self.losses.grid(row=0, column=3)
+        self.draws.grid(row=0, column=4)
+        self.elo.grid(row=0, column=5)
+        self.back_btn.grid(row=12, column=5)
+
 
 
 mm = MyApp()
