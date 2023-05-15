@@ -40,6 +40,7 @@ def choice(array, player, user_choice, button_array):
     change = findpos(user_choice, array)
     if change == - 1:
         print("Column is full make another choice")
+        return -1
     else:
         array[change-1][user_choice] = player
         if change != 0:
@@ -48,9 +49,14 @@ def choice(array, player, user_choice, button_array):
                 button.config(text=str(player))
                 tksleep(0.15)
                 button.config(text=str(0))
+            for buttons in range(0, change - 1):
+                button = button_array[buttons][user_choice]
+                if array[buttons][user_choice] == player:
+                    button.config(text=str(player))
 
         button = button_array[change - 1][user_choice]
         button.config(text=str(player))
+        return 0
 
 
 

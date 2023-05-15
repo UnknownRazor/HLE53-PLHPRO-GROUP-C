@@ -132,11 +132,35 @@ class MainMenu(Tk):
 
     def pve_clicked(self, canvas1, size):
         canvas1.delete("all")
-        self.root.destroy()
-        user = self.username
-        pve_screen = PvBot.pveScreen(user, size)
+        canvas1.destroy()
+        pve_canvas = Canvas(self.root, width=1280, height=640)
+        pve_canvas.pack(fill="both", expand=True)
+
         bg = PhotoImage(file="../assets/bg.png")
-        bg_canvas = pve_screen.canvas.create_image(0, 0, image=bg, anchor="nw")
+        x = 552
+        y = 180
+        pve_canvas.create_image(0, 0, image=bg, anchor="nw")
+        button = tk.Button(self.root, text='Easy', bd=3, width=10, command=lambda: [self.create_pve(size)], font=font_fam)
+        button1 = tk.Button(self.root, text='Hard', bd=3, width=10, command=lambda: [self.create_pve(size)], font=font_fam)
+        button2 = tk.Button(self.root, text='Back', bd=3, width=10, command=lambda: [self.create_main_menu(bg, pve_canvas)], font=font_fam)
+        button3 = tk.Button(self.root, text='Exit', bd=3, width=10, command=lambda: [self.root.destroy()], font=font_fam)
+
+        button_list = (button, button1, button2, button3)
+        for button in button_list:
+            button_canvas = pve_canvas.create_window(x, y, anchor="nw", window=button)
+            y += 70
+        self.root.mainloop()
+    def create_pve(self, size, difficulty=False):
+        if difficulty:
+            self.root.destroy()
+            user = self.username
+            pve_screen = PvBot.pveScreen(user, size, True)
+            self.root = pve_screen.get_root()
+        else:
+            self.root.destroy()
+            user = self.username
+            pve_screen = PvBot.pveScreen(user, size)
+            self.root = pve_screen.get_root()
 
     def signup_login(self):
         username_is = self.username
