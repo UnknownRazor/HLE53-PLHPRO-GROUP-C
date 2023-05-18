@@ -43,13 +43,32 @@ def choice(array, player, user_choice, button_array,img_array=[]):
         return -1
     else:
         array[change-1][user_choice] = player
-
+        if change != 0:
+            for buttons in range(0, change-1):
+                button = button_array[buttons][user_choice]
+                if player == 1:
+                    button.config(image=img_array[1])
+                else:
+                    button.config(image=img_array[2])
+                tksleep(0.15)
+                button.config(image=img_array[0])
+            for buttons in range(0, change - 1):
+                button = button_array[buttons][user_choice]
+                if array[buttons][user_choice] == player:
+                    #button.config(text=str(player))
+                    if player == 1:
+                        button.config(image=img_array[1])
+                    else:
+                        button.config(image=img_array[2])
 
         button = button_array[change - 1][user_choice]
         if player == 1:
             button.config(image=img_array[1])
         else:
             button.config(image=img_array[2])
+        for rows in array:
+            print(rows)
+        print("-----------------------------------")
         return 0
 
 
