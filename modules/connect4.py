@@ -36,26 +36,20 @@ def findpos(user_choice, array):
         counter = - 1
     return counter
 
-def choice(array, player, user_choice, button_array):
+def choice(array, player, user_choice, button_array,img_array=[]):
     change = findpos(user_choice, array)
     if change == - 1:
         print("Column is full make another choice")
         return -1
     else:
         array[change-1][user_choice] = player
-        if change != 0:
-            for buttons in range(0, change-1):
-                button = button_array[buttons][user_choice]
-                button.config(text=str(player))
-                tksleep(0.15)
-                button.config(text=str(0))
-            for buttons in range(0, change - 1):
-                button = button_array[buttons][user_choice]
-                if array[buttons][user_choice] == player:
-                    button.config(text=str(player))
+
 
         button = button_array[change - 1][user_choice]
-        button.config(text=str(player))
+        if player == 1:
+            button.config(image=img_array[1])
+        else:
+            button.config(image=img_array[2])
         return 0
 
 

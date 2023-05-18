@@ -3,11 +3,7 @@ from sqlite3 import Connection
 from tkinter import *
 import sqlite3
 import PvBot
-import sys
-
-# Insert the path of modules folder
-sys.path.insert(0, "..\\modules")
-
+import PvP
 import modules.connect4 as c4
 
 size1 = 7
@@ -128,7 +124,10 @@ class MainMenu(Tk):
             y += 70
 
     def pvp_clicked(self):
-        pass
+        self.root.destroy()
+        user = self.username
+        pvp_screen = PvP.pvpScreen(user, 7, True)
+        self.root = pvp_screen.get_root()
 
     def pve_clicked(self, canvas1, size):
         canvas1.delete("all")
@@ -145,10 +144,12 @@ class MainMenu(Tk):
         button2 = tk.Button(self.root, text='Back', bd=3, width=10, command=lambda: [self.create_main_menu(bg, pve_canvas)], font=font_fam)
         button3 = tk.Button(self.root, text='Exit', bd=3, width=10, command=lambda: [self.root.destroy()], font=font_fam)
 
-        button_list = (button, button1, button2, button3)
+        button_list = (button, button1)
         for button in button_list:
             button_canvas = pve_canvas.create_window(x, y, anchor="nw", window=button)
-            y += 70
+            y += 80
+        button_canvas = pve_canvas.create_window(x, y + 70, anchor="nw", window=button2)
+        button_canvas = pve_canvas.create_window(x, y + 140, anchor="nw", window=button3)
         self.root.mainloop()
     def create_pve(self, size, difficulty=False):
         if difficulty:

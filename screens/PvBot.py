@@ -1,16 +1,6 @@
 import tkinter as tk
 from tkinter import *
-#from PIL import Image, ImageTk
 import modules.gamemode as gm
-import modules.connect4 as c4
-
-array = [[0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         ]
 
 
 class pveScreen(Tk):
@@ -50,21 +40,23 @@ class pveScreen(Tk):
         self.root = root
         play_list = self.create_button_array(size, canvas1, font_fam)
         button_array = play_list[1]
-        photo_image = PhotoImage(file="../assets/pawn.png")
+        #photo_image = PhotoImage(file="../assets/pawn.png")
         #image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
         #canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
         canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
         #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
         # create gamemode instance
-        self.pve_gm = gm.pve_mode(array, button_array, canvas1)
+        self.pve_gm = gm.pve_mode(button_array, canvas1)
         root.mainloop()
     def create_button_array(self, size, canvas1, font_fam):
         buttons_array = []
         buttons_arrays = []
         y = 10
+        #pil_img = Image.open("white.jpg")
+        self.img = PhotoImage(file="../assets/white.png")
         for row in range(0, size-1):
             for col in range(0, size):
-                button = tk.Button(canvas1, text=str(0), bd=3, width=4, command=lambda: [], font=font_fam)
+                button = tk.Label(canvas1, image=self.img, borderwidth=0, highlightthickness=0)
                 buttons_arrays.append(button)
             buttons_array.append(buttons_arrays)
             if len(buttons_arrays) >= size:
@@ -115,7 +107,7 @@ class pveScreen(Tk):
                 self.button_clicked(button, button_array)
             counter += 1
     def button_clicked(self,button_id, button_array):
-        print(f"Button {button_id} clicked!")
+        #print(f"Button {button_id} clicked!")
         self.pve_gm.play(button_id,self.username, self.root)
         #c4.choice(array, 1, button_id, button_array)
 

@@ -1,6 +1,7 @@
 import copy
-from data import *
+from modules.data import *
 from random import randrange
+from modules.player import Player
 
 EMPTY = 0
 PLAYER1 = 1
@@ -12,15 +13,18 @@ MAX_COL = 10
 MAX_ROW = 10
 
 class Game:
-    def __init__(self, ROWS, COLUMNS):
+    def __init__(self):
         # δημιουργία κενού ταμπλό
         self.rows = ROWS
         self.columns = COLUMNS
         self.grid = self.create_grid(self.rows, self.columns)
-        self.won = False
+        self.result = None
+        self.message = None
+        self.player1 = Player("")
+        self.player2 = Player("Computer")
 
     def create_grid(self, rows, columns):
-        return [[EMPTY for column in range(self.columns)] for row in range(self.rows)]
+        return [[EMPTY for column in range(columns)] for row in range(rows)]
 
     # Εύρεση κατώτερης κενής θέσης
     def find_position(self, selected_column):
@@ -192,8 +196,8 @@ class Game:
         # εύρεση κενής θέσης (γραμμής)
         computer_row = self.find_position(computer_column)
         # ο υπολογιστής καταλαμβάνει την κενή θέση
-        self.grid[computer_row][computer_column] = COMPUTER
-        return
+        #self.grid[computer_row][computer_column] = COMPUTER
+        return computer_column
 
 
     # Επιλογή θέσης από τον παίκτη και τοποθέτηση του πιονιού
@@ -315,53 +319,29 @@ class Game:
     # Παίρνει ως όρισμα το ταμπλό και τους παίκτες
     # Ελέγχει αν υπάρχει νικητής/ισοπαλία και επιστρέφει True/False
     def game_over(self):
-        self.won = self.check_winner()
-        if self.won == 1:  # κέρδισε ο παίκτης 1
+        if self.check_winner() == 1:  # κέρδισε ο παίκτης 1
+            self.result = 1
+            self.message = "Player 1 Wins"
             return 1
-        elif self.won == 2:  # κέρδισε ο παίκτης 2
+        elif self.check_winner() == 2:  # κέρδισε ο παίκτης 2
+            self.result = 2
+            self.message = "Player 2 Wins"
             return 2
         elif self.is_draw():  # ισοπαλία
+            self.result = 3
+            self.message = "Draw"
             return 3
         # δεν υπάρχει νικητής/ισοπαλία
         return False
 
     # Ενημέρωση στατιστικών παικτών
-    def update_stats(self, player1, player2):
-        if self.won == 1:
-            player1.win()
-            player2.lose()
-        elif self.won == 2:
-            player2.win()
-            player1.lose()
-        elif self.won == 0:
-            player2.draw()
-            player1.draw()
-        update_table(player1)
-        update_table(player2)
-
-    # # Παίκτης εναντίον παίκτη
-    # def pvp(self, pl_1, pl_2):
-    #     # όσο υπάρχουν κενές θέσεις στο ταμπλό
-    #     while not self.game_over():
-    #         # παίζει ο παίκτης 1
-    #         self.player_turn(PLAYER1, col)
-    #         # έλεγχος αν συμπλήρωσε 4 όμοια
-    #         if self.game_over():
-    #             break
-    #         # παίζει ο παίκτης 2
-    #         self.player_turn(PLAYER2, col)
-    #     return self.game_over()
-    #
-    # # Παίκτης εναντίον υπολογιστή
-    # def pve(self, pl_1, pl_2, level):
-    #     # όσο υπάρχουν κενές θέσεις στο ταμπλό
-    #     while not self.game_over():
-    #         # παίζει ο παίκτης 1
-    #         self.player_turn(PLAYER1)
-    #         # έλεγχος αν συμπλήρωσε 4 όμοια
-    #         if self.game_over():
-    #             break
-    #         # παίζει ο υπολογιστής
-    #         self.computer_turn(level)
-    #     return self.game_over()
-
+    def update_stats(self):
+        if self.result == 1:
+            self.player1.win()
+            self.player2.lose()
+        elif self.result == 2:
+            self.player2.win()
+            self.player1.lose()
+        elif self.result == 3:
+            self.player2.draw()
+            self.player1.draw()

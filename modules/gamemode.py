@@ -3,19 +3,25 @@ from sqlite3 import *
 import screens.end_screen as end
 import modules.connect4 as c4
 import modules.winner as winner
+from tkinter import PhotoImage
+from modules.game import Game
 
 class pve_mode():
-    def __init__(self, array, button_array, canvas):
+    def __init__(self, button_array, canvas):
         self.turn = 1
-        self.array = array
         self.button_array = button_array
         self.canvas = canvas
-
+        self.white = PhotoImage(file="../assets/white.png")
+        self.red = PhotoImage(file="../assets/red.png")
+        self.yellow = PhotoImage(file="../assets/yellow.png")
+        self.img_array = [self.white, self.red, self.yellow]
+        self.game = Game()
+        self.grid = self.game.grid
     def play(self, user_choice, username, root):
-        isValid = c4.choice(self.array, self.turn, user_choice, self.button_array)
+        isValid = c4.choice(self.grid, self.turn, user_choice, self.button_array, self.img_array)
         if isValid == 0:
             self.turn = 2
-        won = winner.game_over(self.array)
+        won = self.game.game_over()
         if won != False:
             if won == 1:
                 print(won)
@@ -26,9 +32,10 @@ class pve_mode():
                 end_scr = end.end_screen(self.canvas, root)
                 pass
         # bot choice
-        if isValid == 0:
-            self.turn = 1
-        won = winner.game_over(self.array)
+        bot_col = self.game.computer_turn("1")
+        isValid = c4.choice(self.grid, self.turn, bot_col, self.button_array, self.img_array)
+        self.turn = 1
+        won = self.game.game_over()
         if won != False:
             if won == 2:
                 print(won)
@@ -38,7 +45,38 @@ class pve_mode():
                 end_scr = end.end_screen(self.canvas, root)
                 pass
 
-
+class pvp_mode():
+    def __init__(self, button_array, canvas):
+        self.turn = 1
+        self.button_array = button_array
+        self.canvas = canvas
+        self.white = PhotoImage(file="../assets/white.png")
+        self.red = PhotoImage(file="../assets/red.png")
+        self.yellow = PhotoImage(file="../assets/yellow.png")
+        self.img_array = [self.white, self.red, self.yellow]
+        self.game = Game()
+        self.grid = self.game.grid
+    def play(self, user_choice, username, root):
+        isValid = c4.choice(self.grid, self.turn, user_choice, self.button_array, self.img_array)
+        if isValid == 0:
+            if self.turn == 1:
+                self.turn = 2
+            else:
+                self.turn = 1
+        won = self.game.game_over()
+        if won != False:
+            if won == 1:
+                print(won)
+                end_scr = end.end_screen(self.canvas, root)
+                pass
+            elif won == 2:
+                print(won)
+                end_scr = end.end_screen(self.canvas, root)
+                pass
+            elif won == 3:
+                print(won)
+                end_scr = end.end_screen(self.canvas, root)
+                pass
 
 #def db_connection(username,elo):
 #    try:

@@ -1,58 +1,13 @@
 import tkinter as tk
 from tkinter import *
-#from PIL import Image, ImageTk
-
-import modules.connect4 as c4
-
-def print_board(board):
-    for row in board:
-        print(row)
-
-def findpos(user_choice, player):
-    for row in reversed(array):
-        if row[user_choice] == 0:
-            row[user_choice] = player
-            return True
-    return False
-
-
-def play(player):
-    while True:
-        try:
-            print_board(array)
-            user_choice = int(input(f"Player {player}, enter column (1-7): ")) - 1
-        except ValueError:
-            print ("\n Invalid input. Try again. \n")
-            continue
-        if (user_choice>=0 and user_choice<=6):
-            break
-        else:
-            print ("\n invalid column \n")
-            continue
-    if findpos(user_choice, player):
-        if player == 1:
-            player = 2
-        else:
-            player = 1
-    else:
-        print("\n Invalid move. Try again. \n")
-        return False
-    return True
-
-
-array = [[0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0],
-         ]
+import modules.gamemode as gm
 
 
 class pvpScreen(Tk):
-    def __init__(self, username, size):
+    def __init__(self, username, size, difficulty=False):
         self.username = username
         self.size = size
+        self.difficulty = difficulty
         root = tk.Tk()
         root.resizable(False, False)
         root.geometry("1280x640")
@@ -60,17 +15,21 @@ class pvpScreen(Tk):
         font_fam = ("Roboto", 18, "bold")
         font_fam2 = ("Roboto", 14, "bold")
         bg = PhotoImage(file="../assets/bg.png")
-        # canvas main menu
+        #
         # --------------------------------------------------------------------------------------------------------------#
-        root.title('Connect 4 App - ΠΛΗΠΡΟ/ΗΛΕ53 - PvE')
+        root.title('Connect 4 App - ΠΛΗΠΡΟ/ΗΛΕ53 - PvP')
         canvas1 = Canvas(root, width=1280, height=640)
         canvas1.pack(fill="both", expand=True)
         bg_canvas = canvas1.create_image(0, 0, image=bg, anchor="nw")
         self.canvas = canvas1
+        # Exit button creation #
         Exit_button = tk.Button(root, text='Exit', bd=5, width=3, command=root.destroy, font=font_fam,
                                 highlightcolor="black")
         Exit_UI = canvas1.create_window(12, 20, anchor="nw", window=Exit_button)
+        # ----------- #
+        # Line next to exit button #
         canvas1.create_line(82.8, 0, 82.8, 640, fill="black", width=2.5)
+        # ---------- #
         menu_buttons = []
         #c4.findpos(counter-1, array)
         #for counter in range(0,size):
@@ -79,22 +38,25 @@ class pvpScreen(Tk):
             menu_buttons.append(counter)
         column_buttons = self.create_buttons(menu_buttons, canvas1, 0, 0, False, True)
         self.root = root
-        print(column_buttons)
-        play_list = self.create_button_array(size, canvas1, root, font_fam)
+        play_list = self.create_button_array(size, canvas1, font_fam)
         button_array = play_list[1]
-        photo_image = PhotoImage(file="../assets/pawn.png")
-        image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
-        canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
+        #photo_image = PhotoImage(file="../assets/pawn.png")
+        #image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
+        #canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
         canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
-        canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
+        #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
+        # create gamemode instance
+        self.pve_gm = gm.pvp_mode(button_array, canvas1)
         root.mainloop()
-    def create_button_array(self, size, canvas1, root, font_fam):
+    def create_button_array(self, size, canvas1, font_fam):
         buttons_array = []
         buttons_arrays = []
         y = 10
+        #pil_img = Image.open("white.jpg")
+        self.img = PhotoImage(file="../assets/white.png")
         for row in range(0, size-1):
             for col in range(0, size):
-                button = tk.Button(canvas1, text=str(0), bd=3, width=4, command=lambda: [], font=font_fam)
+                button = tk.Label(canvas1, image=self.img, borderwidth=0, highlightthickness=0)
                 buttons_arrays.append(button)
             buttons_array.append(buttons_arrays)
             if len(buttons_arrays) >= size:
@@ -145,8 +107,9 @@ class pvpScreen(Tk):
                 self.button_clicked(button, button_array)
             counter += 1
     def button_clicked(self,button_id, button_array):
-        print(f"Button {button_id} clicked!")
-        c4.choice(array, 1, button_id, button_array)
+        #print(f"Button {button_id} clicked!")
+        self.pve_gm.play(button_id,self.username, self.root)
+        #c4.choice(array, 1, button_id, button_array)
 
     def on_mouse_move(self,event, canvas1, image_id):
         x, y = event.x, event.y
@@ -158,8 +121,9 @@ class pvpScreen(Tk):
         else:
             # Hide the image if the mouse is not within the specified bounds
             canvas1.itemconfig(image_id, state="hidden")
-
+    def get_root(self):
+        return self.root
 
 
 if __name__ == "__main__":
-    pve = pvpScreen("Hello", 7)
+    pve = pveScreen("Hello", 7)
