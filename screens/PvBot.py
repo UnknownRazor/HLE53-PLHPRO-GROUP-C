@@ -99,7 +99,7 @@ class PVEScreen:
             counter += 1
 
     def button_clicked(self, button_id):
-        self.pve_gm.play(button_id, self.username)
+        self.pve_gm.play(button_id, self.root)
 
     # Εμφανίζει την εικόνα όταν είναι εντός ορίων
     # και ακολουθεί το ποντίκι

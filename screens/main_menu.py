@@ -144,7 +144,9 @@ class MainMenu:
         username_is = self.username
         new_user = Player(username_is)
         db.insert_table(new_user)
-
+    def game_end(self, winner):
+        self.winner = winner
+        self.root.destroy()
 if __name__ == "__main__":
     db = DataBase()
     game = Game()
