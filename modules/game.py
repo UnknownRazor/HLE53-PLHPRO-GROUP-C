@@ -178,7 +178,7 @@ class Game:
             if computer_row != -1:
                 break
         # ο υπολογιστής καταλαμβάνει την κενή θέση
-        self.grid[computer_row][computer_column] = player
+        self.grid[computer_row][computer_column] = COMPUTER
         return computer_column
 
 
