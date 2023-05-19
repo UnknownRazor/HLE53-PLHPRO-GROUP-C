@@ -53,7 +53,7 @@ class MainMenu:
         rank_canvas.pack(fill="both", expand=True)
         canvas.delete("all")
         canvas.destroy()
-        pvp_btn = tk.Button(self.root, text='PvP', bd=3, width=10, command=lambda: [self.pvp_clicked()],
+        pvp_btn = tk.Button(self.root, text='PvP', bd=3, width=10, command=lambda: [self.pvp_clicked(size1)],
                            font=font_fam)
         pve_btn = tk.Button(self.root, text='PvE', bd=3, width=10,
                             command=lambda: [self.pve_clicked(rank_canvas, size1)], font=font_fam)
@@ -99,10 +99,10 @@ class MainMenu:
             rank_canvas.create_window(x, y, anchor="nw", window=button)
             y += 70
 
-    def pvp_clicked(self):
+    def pvp_clicked(self,size):
         self.root.destroy()
         user = self.username
-        pvp_screen = PvP.PVPScreen(user, 7, True)
+        pvp_screen = PvP.PVPScreen(user, size, True)
         self.root = pvp_screen.get_root()
 
     def pve_clicked(self, rank_canvas, size):
@@ -116,7 +116,7 @@ class MainMenu:
         y = 180
         pve_canvas.create_image(0, 0, image=bg, anchor="nw")
         easy_btn = tk.Button(self.root, text='Easy', bd=3, width=10, command=lambda: [self.create_pve(size)], font=font_fam)
-        hard_btn = tk.Button(self.root, text='Hard', bd=3, width=10, command=lambda: [self.create_pve(size)], font=font_fam)
+        hard_btn = tk.Button(self.root, text='Hard', bd=3, width=10, command=lambda: [self.create_pve(size, True)], font=font_fam)
         back_btn = tk.Button(self.root, text='Back', bd=3, width=10, command=lambda: [self.create_main_menu(bg, pve_canvas)], font=font_fam)
         exit_btn = tk.Button(self.root, text='Exit', bd=3, width=10, command=lambda: [self.root.destroy()], font=font_fam)
 

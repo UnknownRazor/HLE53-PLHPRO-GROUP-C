@@ -5,3 +5,4 @@ class end_screen(Tk):
         canvas.destroy()
         end_canvas = tk.Canvas(root)
         bg = PhotoImage(file="../assets/bg.png")
+        end_canvas.pack(fill="both", expand=True)

@@ -13,7 +13,7 @@ MAX_COL = 10
 MAX_ROW = 10
 
 class Game:
-    def __init__(self):
+    def __init__(self, ROWS=ROWS, COLUMNS=COLUMNS):
         # δημιουργία κενού ταμπλό
         self.rows = ROWS
         self.columns = COLUMNS

@@ -36,7 +36,7 @@ class PVEScreen:
         button_array = play_list[1]
         self.canvas.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
         # create gamemode instance
-        self.pve_gm = gm.PVEMode(button_array, self.canvas)
+        self.pve_gm = gm.PVEMode(button_array, self.canvas, difficulty)
         self.root.mainloop()
 
     def create_button_array(self, size):
