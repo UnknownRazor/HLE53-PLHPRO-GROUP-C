@@ -203,7 +203,7 @@ class Game:
             return -1
         else:
             # ο παίκτης καταλαμβάνει την κενή θέση
-            self.grid[player_row][player_column] = PLAYER1
+            self.grid[player_row][player_column] = player
             return player_row
 
     # Ελέγχει αν υπάρχουν 4 όμοιες θέσεις οριζόντια
