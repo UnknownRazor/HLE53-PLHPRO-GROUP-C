@@ -89,7 +89,7 @@ class PVEMode(PVPMode):
             # bot choice
             if self.can_play == False:
                 if self.difficulty == True:
-                    bot_row, bot_col = self.game.computer_turn("2")
+                    bot_row, bot_col = self.game.computer_turn("3")
                     self.animate(bot_row, bot_col)
                 else:
                     bot_row, bot_col = self.game.computer_turn("1")

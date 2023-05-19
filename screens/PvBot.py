@@ -4,13 +4,13 @@ import modules.gamemode as gm
 
 font_fam = ("Roboto", 18, "bold")
 
+
 class PVEScreen:
-    def __init__(self, username, size, difficulty=False):
+    def __init__(self, username, size, root, difficulty=False):
         self.username = username
         self.size = size
         self.difficulty = difficulty
-        self.root = tk.Tk()
-        self.root.resizable(False, False)
+        self.root = root
         self.root.geometry("1280x640")
         self.root.iconbitmap('../assets/logo.ico')
         bg = PhotoImage(file="../assets/bg.png")
@@ -22,7 +22,7 @@ class PVEScreen:
         self.canvas.create_image(0, 0, image=bg, anchor="nw")
         # Exit button creation #
         exit_btn = tk.Button(self.root, text='Exit', bd=5, width=3, command=self.root.destroy, font=font_fam,
-                                highlightcolor="black")
+                             highlightcolor="black")
         self.canvas.create_window(12, 20, anchor="nw", window=exit_btn)
         # ----------- #
         # Line next to exit button #
@@ -33,10 +33,11 @@ class PVEScreen:
             menu_buttons.append(counter)
         column_buttons = self.create_buttons(menu_buttons, 0, 0, False, True)
         play_list = self.create_button_array(size)
-        button_array = play_list[1]
-        self.canvas.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
+        self.button_array = play_list[1]
+        self.canvas.bind("<Button-1>",
+                         lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, self.button_array))
         # create gamemode instance
-        self.pve_gm = gm.PVEMode(button_array, self.canvas, difficulty)
+        self.pve_gm = gm.PVEMode(self.button_array, self.canvas, difficulty)
         self.root.mainloop()
 
     def create_button_array(self, size):
@@ -44,7 +45,7 @@ class PVEScreen:
         buttons_arrays = []
         y = 10
 
-        for row in range(0, size-1):
+        for row in range(0, size - 1):
             for col in range(0, size):
                 button = tk.Label(self.canvas, image=self.white, borderwidth=0, highlightthickness=0)
                 buttons_arrays.append(button)
@@ -57,7 +58,7 @@ class PVEScreen:
             button_canvas_array = self.create_buttons(rows, x, y, True)
         return [button_canvas_array, buttons_array]
 
-    def create_buttons(self, button_list, offsetX, offsetY, half=False, button_coord = False):
+    def create_buttons(self, button_list, offsetX, offsetY, half=False, button_coord=False):
         x = 92 + offsetX
         y = 10 + offsetY
         button_canvas_array = []
@@ -67,9 +68,9 @@ class PVEScreen:
             for button in button_list:
                 button_coords = []
                 button_coords.append(x)
-                button_coords.append(x+70)
+                button_coords.append(x + 70)
                 button_coords.append(y)
-                button_coords.append(y+60)
+                button_coords.append(y + 60)
                 button_coords_list.append(button_coords)
                 x += 70
             return button_coords_list
@@ -85,7 +86,7 @@ class PVEScreen:
 
     def is_within_button(self, x, y, button_coords):
         button_x1, button_x2, button_y1, button_y2 = button_coords
-        if x in range(button_x1, button_x2+1) and y in range(button_y1, button_y2+1):
+        if x in range(button_x1, button_x2 + 1) and y in range(button_y1, button_y2 + 1):
             return True
         return False
 
@@ -107,13 +108,19 @@ class PVEScreen:
         x, y = event.x, event.y
         if 90 < x < 580 and 10 < y < 60:
             self.canvas.itemconfig(image_id, state="normal")
-            self.canvas.coords(image_id, x/4, y/4)
+            self.canvas.coords(image_id, x / 4, y / 4)
         else:
             self.canvas.itemconfig(image_id, state="hidden")
 
-    def get_root(self):
-        return self.root
+    def get_canvas(self):
+        return self.canvas
 
 
-if __name__ == "__main__":
-    pve = PVEScreen("Hello", 7)
+class PVPScreen(PVEScreen):
+    def __init__(self, username, username2, root, size):
+        super().__init__(username, username2, root, size)
+        self.username2 = username2
+        self.pve_gm = gm.PVPMode(self.button_array, self.canvas)
+
+    def button_clicked(self, button_id):
+        self.pve_gm.play(button_id, self.root)
