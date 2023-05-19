@@ -1,7 +1,7 @@
 import copy
-from modules.data import *
+from data import *
 from random import randrange
-from modules.player import Player
+from player import Player
 
 EMPTY = 0
 PLAYER1 = 1
@@ -27,12 +27,12 @@ class Game:
         return [[EMPTY for column in range(columns)] for row in range(rows)]
 
     # Εύρεση κατώτερης κενής θέσης
-    def find_position(self, selected_column):
+    def find_position(self, grid, selected_column):
         # αναζήτηση στις γραμμές για την κατώτερη κενή θέση(0)
-        for row in range(len(self.grid)):
+        for row in range(len(grid)):
             # αν βρεθεί γεμάτη θέση επιστρέφει την προηγούμενη γραμμή(κενή)
             # αν ολόκληρη η στήλη είναι γεμάτη, επιστρέφει -1
-            if self.grid[row][selected_column] != 0:
+            if grid[row][selected_column] != 0:
                 return row-1
         # αν ολόκληρη η στήλη είναι κενή επιστρέφει την τελευταία γραμμή
         return 5
@@ -57,12 +57,12 @@ class Game:
 
     # Βρίσκει όλες τις πιθανές στήλες που μπορεί να τοποθετηθεί πιόνι
     # επιστρέφει μια λίστα των στηλών
-    def possible_cols(self):
+    def possible_cols(self, grid):
         cols = []
         # αν υπάρχει κενή θέση στην πρώτη(επάνω) γραμμή
         # την προσθέτει στη λίστα
-        for col in range(len(self.grid[0])):
-            if self.grid[0][col] == 0:
+        for col in range(len(grid[0])):
+            if grid[0][col] == 0:
                 cols.append(col)
         return cols
 
@@ -91,34 +91,30 @@ class Game:
 
     # ελέγχει ολόκληρο το ταμπλό και υπολογίζει το score
     # δημιουργώντας τετράδες
-    def evaluate(self):
+    def evaluate(self, grid):
         score = 0
 
         # οριζόντια
         for row in range(len(self.grid)):
             for column in range(len(self.grid[0]) - 3):
-                boxes = [self.grid[row][column], self.grid[row][column + 1],
-                         self.grid[row][column + 2], self.grid[row][column + 3]]
+                boxes = [grid[row][column], grid[row][column + 1], grid[row][column + 2], grid[row][column + 3]]
                 score += self.calculate(boxes)
         # κάθετα
         for column in range(len(self.grid[0])):
             for row in range(len(self.grid)-3):
-                boxes = [self.grid[row][column], self.grid[row+1][column],
-                         self.grid[row+2][column], self.grid[row+3][column]]
+                boxes = [grid[row][column], grid[row+1][column], grid[row+2][column], grid[row+3][column]]
                 score += self.calculate(boxes)
         # διαγώνια
         for row in range(len(self.grid)-3):
             for column in range(len(self.grid[0])-3):
-                boxes = [self.grid[row][column], self.grid[row+1][column + 1],
-                         self.grid[row+2][column + 2], self.grid[row+3][column + 3]]
+                boxes = [grid[row][column], grid[row+1][column + 1], grid[row+2][column + 2], grid[row+3][column + 3]]
                 score += self.calculate(boxes)
         # αντιδιαγώνια
-        anti_grid = [[self.grid[row][column] for column in range(len(self.grid[0]) - 1, -1, -1)]
-                     for row in range(len(self.grid))]
+        anti_grid = [[grid[row][column] for column in range(len(grid[0]) - 1, -1, -1)] for row in range(len(grid))]
         for row in range(len(anti_grid) - 3):
             for column in range(len(anti_grid[0]) - 3):
                 boxes = [anti_grid[row][column], anti_grid[row + 1][column + 1], anti_grid[row + 2][column + 2],
-                        anti_grid[row + 3][column + 3]]
+                         anti_grid[row + 3][column + 3]]
                 score += self.calculate(boxes)
 
         return score
@@ -126,16 +122,16 @@ class Game:
 
     # Αλγόριθμος minimax
     def minimax(self, grid, depth, maximizing_player):
-        valid_locations = self.possible_cols()
-        is_terminal = self.game_over()
+        valid_locations = self.possible_cols(grid)
+        is_terminal = self.game_over(grid)
         if depth == 0 or is_terminal:
-            return self.evaluate()
+            return self.evaluate(grid)
 
         if maximizing_player:   # υπολογιστής
             value = -float('inf')
             for col in valid_locations:
-                row = self.find_position(col)
-                b_copy = copy.deepcopy(self.grid)
+                row = self.find_position(grid, col)
+                b_copy = copy.deepcopy(grid)
                 b_copy[row][col] = COMPUTER
                 new_score = self.minimax(b_copy, depth-1, False)
                 value = max(value, new_score)
@@ -143,7 +139,7 @@ class Game:
         else:   # minimazing player (παίκτης)
             value = float('inf')
             for col in valid_locations:
-                row = self.find_position(col)
+                row = self.find_position(grid, col)
                 b_copy = copy.deepcopy(grid)
                 b_copy[row][col] = PLAYER1
                 new_score = self.minimax(b_copy, depth-1, True)
@@ -158,7 +154,7 @@ class Game:
         best_score = -float('inf')  # αρχικοποίηση στο μείον άπειρο
         # βρίσκει την καταλληλότερη στήλη για να τοποθετήσει το πιόνι
         for col in range(len(self.grid[0])):
-            computer_row = self.find_position(col)
+            computer_row = self.find_position(self.grid, col)
             if computer_row != -1:
                 new_grid = copy.deepcopy(self.grid)
                 new_grid[computer_row][col] = COMPUTER
@@ -175,7 +171,7 @@ class Game:
             # ο υπολογιστής διαλέγει μια τυχαία στήλη
             computer_column = randrange(len(self.grid[0]))
             # εύρεση κενής θέσης (γραμμής)
-            computer_row = self.find_position(computer_column)
+            computer_row = self.find_position(self.grid, computer_column)
             # αν υπάρχει κενή θέση
             if computer_row != -1:
                 break
@@ -194,9 +190,9 @@ class Game:
         else:   # level = '3'
             computer_column = self.hard(3)
         # εύρεση κενής θέσης (γραμμής)
-        computer_row = self.find_position(computer_column)
+        computer_row = self.find_position(self.grid, computer_column)
         # ο υπολογιστής καταλαμβάνει την κενή θέση
-        #self.grid[computer_row][computer_column] = COMPUTER
+        self.grid[computer_row][computer_column] = COMPUTER
         return computer_column
 
 
@@ -204,12 +200,12 @@ class Game:
     def player_turn(self, player, player_column):
         player_column -= 1
         # εύρεση κενής θέσης (γραμμής)
-        player_row = self.find_position(player_column)
+        player_row = self.find_position(self.grid, player_column)
         # αν η στήλη είναι γεμάτη, διαλέγει άλλη στήλη
         while player_row == -1:
             print("This Column is Full!")
             player_column = player_column
-            player_row = self.find_position(player_column)
+            player_row = self.find_position(self.grid, player_column)
         # ο παίκτης καταλαμβάνει την κενή θέση
         self.grid[player_row][player_column] = player
         return
@@ -318,7 +314,7 @@ class Game:
 
     # Παίρνει ως όρισμα το ταμπλό και τους παίκτες
     # Ελέγχει αν υπάρχει νικητής/ισοπαλία και επιστρέφει True/False
-    def game_over(self):
+    def game_over(self, grid):
         if self.check_winner() == 1:  # κέρδισε ο παίκτης 1
             self.result = 1
             self.message = "Player 1 Wins"
