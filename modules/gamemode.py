@@ -2,6 +2,7 @@ import screens.end_screen as end
 import modules.connect4 as c4
 from tkinter import PhotoImage
 from modules.game import Game
+import screens.main_menu as mm
 
 class PVPMode:
     def __init__(self, button_array, canvas):
@@ -22,7 +23,10 @@ class PVPMode:
             row = self.game.player_turn(self.turn, user_choice)
             if row != -1:
                 self.animate(row, user_choice)
-                self.turn = 2
+                if self.turn == 1:
+                    self.turn = 2
+                else:
+                    self.turn = 1
             else:
                 self.can_play = True
             won = self.game.game_over()
@@ -33,6 +37,7 @@ class PVPMode:
                 elif won == 0:
                     print(won)
                     end.end_screen(self.canvas, root)
+            self.can_play = True
     def animate(self, row, col):
         if row != 0:
             for buttons in range(0, row - 1):
@@ -75,14 +80,16 @@ class PVEMode(PVPMode):
             if won:
                 if won == 1:
                     print(won)
+                    print(root)
                     end.end_screen(self.canvas, root)
                 elif won == 0:
                     print(won)
+                    print(root)
                     end.end_screen(self.canvas, root)
             # bot choice
             if self.can_play == False:
                 if self.difficulty == True:
-                    bot_row, bot_col = self.game.computer_turn("3")
+                    bot_row, bot_col = self.game.computer_turn("2")
                     self.animate(bot_row, bot_col)
                 else:
                     bot_row, bot_col = self.game.computer_turn("1")
@@ -92,9 +99,11 @@ class PVEMode(PVPMode):
                 if won:
                     if won == 2:
                         print(won)
+                        print(root)
                         end.end_screen(self.canvas, root)
                         pass
                     elif won == 0:
+                        print(root)
                         end.end_screen(self.canvas, root)
                         pass
                 self.can_play = True
