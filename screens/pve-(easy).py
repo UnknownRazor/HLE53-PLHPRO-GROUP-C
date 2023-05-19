@@ -25,7 +25,7 @@ while True:
         try:
             print_board(array)
             user_choice = int(input("Player 1, enter column (1-7): ")) - 1
-            if (user_choice>=0 and user_choice<=6):
+            if user_choice>=0 and user_choice<=6:
                 break
             else:
                 print ("\n invalid column play again \n")

@@ -1,7 +1,6 @@
 import copy
-from data import *
 from random import randrange
-from player import Player
+from modules.player import Player
 
 EMPTY = 0
 PLAYER1 = 1
@@ -23,8 +22,10 @@ class Game:
         self.player1 = Player("")
         self.player2 = Player("Computer")
 
+
     def create_grid(self, rows, columns):
         return [[EMPTY for column in range(columns)] for row in range(rows)]
+
 
     # Εύρεση κατώτερης κενής θέσης
     def find_position(self, grid, selected_column):
@@ -123,7 +124,7 @@ class Game:
     # Αλγόριθμος minimax
     def minimax(self, grid, depth, maximizing_player):
         valid_locations = self.possible_cols(grid)
-        is_terminal = self.game_over(grid)
+        is_terminal = self.game_over()
         if depth == 0 or is_terminal:
             return self.evaluate(grid)
 
@@ -149,7 +150,8 @@ class Game:
 
     # Επιλογή θέσης(στήλης) βάση Minimax από τον υπολογιστή για τοποθέτηση του πιονιού
     # depth : επίπεδο δυσκολίας
-    def hard(self, depth):
+    def hard(self):
+        depth = 3
         computer_column = None
         best_score = -float('inf')  # αρχικοποίηση στο μείον άπειρο
         # βρίσκει την καταλληλότερη στήλη για να τοποθετήσει το πιόνι
@@ -185,10 +187,8 @@ class Game:
         # ο υπολογιστής επιλέγει level (easy ή hard)
         if level == '1':
             computer_column = self.easy()
-        elif level == '2':
-            computer_column = self.hard(1)
-        else:   # level = '3'
-            computer_column = self.hard(3)
+        else:
+            computer_column = self.hard()
         # εύρεση κενής θέσης (γραμμής)
         computer_row = self.find_position(self.grid, computer_column)
         # ο υπολογιστής καταλαμβάνει την κενή θέση
@@ -314,7 +314,7 @@ class Game:
 
     # Παίρνει ως όρισμα το ταμπλό και τους παίκτες
     # Ελέγχει αν υπάρχει νικητής/ισοπαλία και επιστρέφει True/False
-    def game_over(self, grid):
+    def game_over(self):
         if self.check_winner() == 1:  # κέρδισε ο παίκτης 1
             self.result = 1
             self.message = "Player 1 Wins"

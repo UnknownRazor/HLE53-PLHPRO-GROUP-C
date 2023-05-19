@@ -3,7 +3,7 @@ from tkinter import *
 import modules.gamemode as gm
 
 
-class pvpScreen(Tk):
+class PVPScreen:
     def __init__(self, username, size, difficulty=False):
         self.username = username
         self.size = size
@@ -46,8 +46,9 @@ class pvpScreen(Tk):
         canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
         #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
         # create gamemode instance
-        self.pve_gm = gm.pvp_mode(button_array, canvas1)
+        self.pve_gm = gm.PVPMode(button_array, canvas1)
         root.mainloop()
+
     def create_button_array(self, size, canvas1, font_fam):
         buttons_array = []
         buttons_arrays = []
@@ -98,6 +99,7 @@ class pvpScreen(Tk):
         if button_x1 <= x <= button_x2 and y >= button_y1 and y <= button_y2:
             return True
         return False
+
     def on_canvas_click(self,event, col_array, coord_list, button_array):
         x, y = event.x, event.y
         counter = 0
@@ -106,9 +108,10 @@ class pvpScreen(Tk):
             if self.is_within_button(x, y, coord_list_copy):
                 self.button_clicked(button, button_array)
             counter += 1
+
     def button_clicked(self,button_id, button_array):
         #print(f"Button {button_id} clicked!")
-        self.pve_gm.play(button_id,self.username, self.root)
+        self.pve_gm.play(button_id)
         #c4.choice(array, 1, button_id, button_array)
 
     def on_mouse_move(self,event, canvas1, image_id):
@@ -121,9 +124,10 @@ class pvpScreen(Tk):
         else:
             # Hide the image if the mouse is not within the specified bounds
             canvas1.itemconfig(image_id, state="hidden")
+
     def get_root(self):
         return self.root
 
 
 if __name__ == "__main__":
-    pve = pveScreen("Hello", 7)
+    pve = PVPScreen("Hello", 7)

@@ -11,7 +11,7 @@ class DataBase:
     # Σύνδεση στο Database
     def connect_to_db(self):
         try:
-            self.connection = sqlite3.connect('connect4.db')
+            self.connection = sqlite3.connect('..\\db\\connect4_PythonDB.db')
         except sqlite3.Error as error:
             print("Error while connecting to sqlite", error)
 
@@ -29,6 +29,13 @@ class DataBase:
         cursor.execute(sql_query)
 
         self.connection.commit()
+
+    # Βρίσκει έναν παίκτη στο DataBase
+    def get_user(self, player):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE name=?", (player,))
+        user = cursor.fetchone()
+        return user
 
 
     # Εισαγωγή παίκτη στον πίνακα αν δεν υπάρχει
@@ -65,10 +72,8 @@ class DataBase:
         self.connection.commit()
 
     # Δημιουργία ταξινομημένων παικτών βάση ELO (top 10)
-    def top_10(self):
-
+    def ranking(self):
         cursor = self.connection.cursor()
-
         sql_query = """SELECT * FROM users ORDER BY -elo LIMIT 0,10"""
 
         top_players = cursor.execute(sql_query)
