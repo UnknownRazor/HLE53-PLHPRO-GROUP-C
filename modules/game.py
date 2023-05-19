@@ -164,7 +164,7 @@ class Game:
                 if score > best_score:
                     best_score = score
                     computer_column = col
-        return computer_column
+        return computer_row, computer_column 
 
 
     # Επιλογή τυχαίας θέσης από τον υπολογιστή και τοποθέτηση του πιονιού
@@ -177,20 +177,16 @@ class Game:
             # αν υπάρχει κενή θέση
             if computer_row != -1:
                 break
-        # ο υπολογιστής καταλαμβάνει την κενή θέση
-        self.grid[computer_row][computer_column] = COMPUTER
-        return computer_column
+        return computer_row, computer_column 
 
 
     # Επιλογή θέσης από τον υπολογιστή και τοποθέτηση του πιονιού
     def computer_turn(self, level):
         # ο υπολογιστής επιλέγει level (easy ή hard)
         if level == '1':
-            computer_column = self.easy()
+            computer_row, computer_column = self.easy()
         else:
-            computer_column = self.hard()
-        # εύρεση κενής θέσης (γραμμής)
-        computer_row = self.find_position(self.grid, computer_column)
+            computer_row, computer_column = self.hard()
         # ο υπολογιστής καταλαμβάνει την κενή θέση
         self.grid[computer_row][computer_column] = COMPUTER
         return computer_column
