@@ -1,6 +1,5 @@
 import screens.end_screen as end
 import modules.connect4 as c4
-import tkinter as tk
 from tkinter import PhotoImage
 from modules.game import Game
 
