@@ -111,7 +111,7 @@ class PVPScreen:
 
     def button_clicked(self,button_id, button_array):
         #print(f"Button {button_id} clicked!")
-        self.pve_gm.play(button_id)
+        self.pve_gm.play(button_id, self.root)
         #c4.choice(array, 1, button_id, button_array)
 
     def on_mouse_move(self,event, canvas1, image_id):
