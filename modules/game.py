@@ -202,13 +202,13 @@ class Game:
         # εύρεση κενής θέσης (γραμμής)
         player_row = self.find_position(self.grid, player_column)
         # αν η στήλη είναι γεμάτη, διαλέγει άλλη στήλη
-        while player_row == -1:
+        if player_row == -1:
             print("This Column is Full!")
-            player_column = player_column
-            player_row = self.find_position(self.grid, player_column)
-        # ο παίκτης καταλαμβάνει την κενή θέση
-        self.grid[player_row][player_column] = player
-        return
+            return -1
+        else:
+            # ο παίκτης καταλαμβάνει την κενή θέση
+            self.grid[player_row][player_column] = player
+            return player_row
 
     # Ελέγχει αν υπάρχουν 4 όμοιες θέσεις οριζόντια
     def horizontal_four(self):
