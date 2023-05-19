@@ -5,7 +5,8 @@ from tkinter import PhotoImage
 from modules.game import Game
 
 class PVEMode:
-    def __init__(self, button_array, canvas):
+    def __init__(self, button_array, canvas, difficulty=False):
+        self.difficulty = difficulty
         self.turn = 1
         self.button_array = button_array
         self.can_play = True
@@ -20,8 +21,9 @@ class PVEMode:
     def play(self, user_choice, root):
         if self.can_play:
             self.can_play = False
-            is_valid = c4.choice(self.grid, self.turn, user_choice, self.button_array, self.img_array)
-            if is_valid == 0:
+            row = self.game.player_turn(self.turn, user_choice)
+            if row != -1:
+                self.animate(row, user_choice)
                 self.turn = 2
             else:
                 self.can_play = True
@@ -36,20 +38,50 @@ class PVEMode:
                     end.end_screen(self.canvas, root)
                     pass
             # bot choice
-            bot_col = self.game.computer_turn("1")
-            is_valid = c4.choice(self.grid, self.turn, bot_col, self.button_array, self.img_array)
-            self.turn = 1
-            won = self.game.game_over()
-            if won:
-                if won == 2:
-                    print(won)
-                    end.end_screen(self.canvas, root)
-                    pass
-                elif won == 0:
-                    end.end_screen(self.canvas, root)
-                    pass
-            self.can_play = True
-
+            if self.can_play == False:
+                if self.difficulty == True:
+                    bot_row, bot_col = self.game.computer_turn("3")
+                    self.animate(bot_row, bot_col)
+                else:
+                    bot_row, bot_col = self.game.computer_turn("1")
+                    self.animate(bot_row, bot_col)
+                self.turn = 1
+                won = self.game.game_over()
+                if won:
+                    if won == 2:
+                        print(won)
+                        end.end_screen(self.canvas, root)
+                        pass
+                    elif won == 0:
+                        end.end_screen(self.canvas, root)
+                        pass
+                self.can_play = True
+                for row in self.game.grid:
+                    print(row)
+                print("-----------------------")
+    def animate(self, row, col):
+        if row != 0:
+            for buttons in range(0, row - 1):
+                button = self.button_array[buttons][col]
+                if self.turn == 1:
+                    button.config(image=self.img_array[1])
+                else:
+                    button.config(image=self.img_array[2])
+                c4.tksleep(0.15)
+                button.config(image=self.img_array[0])
+            for buttons in range(0, row - 1):
+                button = self.button_array[buttons][col]
+                if self.grid[buttons][col] == self.turn:
+                    # button.config(text=str(player))
+                    if self.turn == 1:
+                        button.config(image=self.img_array[1])
+                    else:
+                        button.config(image=self.img_array[2])
+        button = self.button_array[row][col]
+        if self.turn == 1:
+            button.config(image=self.img_array[1])
+        else:
+            button.config(image=self.img_array[2])
 class PVPMode:
     def __init__(self, button_array, canvas):
         self.turn = 1
@@ -66,8 +98,8 @@ class PVPMode:
     def play(self, user_choice, root):
         if self.can_play:
             self.can_play = False
-            is_valid = c4.choice(self.grid, self.turn, user_choice, self.button_array, self.img_array)
-            if is_valid == 0:
+            row = c4.choice(self.grid, self.turn, user_choice, self.button_array, self.img_array)
+            if row == 0:
                 if self.turn == 1:
                     self.turn = 2
                     self.can_play = True

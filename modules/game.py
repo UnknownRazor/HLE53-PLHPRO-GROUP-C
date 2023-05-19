@@ -1,4 +1,5 @@
 import copy
+from modules.data import *
 from random import randrange
 from modules.player import Player
 
@@ -22,10 +23,8 @@ class Game:
         self.player1 = Player("")
         self.player2 = Player("Computer")
 
-
     def create_grid(self, rows, columns):
         return [[EMPTY for column in range(columns)] for row in range(rows)]
-
 
     # Εύρεση κατώτερης κενής θέσης
     def find_position(self, grid, selected_column):
@@ -36,7 +35,7 @@ class Game:
             if grid[row][selected_column] != 0:
                 return row-1
         # αν ολόκληρη η στήλη είναι κενή επιστρέφει την τελευταία γραμμή
-        return row-1
+        return row
 
 
     # Επιλογή στήλης που θα αφήσει το πιόνι ο παίκτης
@@ -150,8 +149,7 @@ class Game:
 
     # Επιλογή θέσης(στήλης) βάση Minimax από τον υπολογιστή για τοποθέτηση του πιονιού
     # depth : επίπεδο δυσκολίας
-    def hard(self):
-        depth = 3
+    def hard(self, depth):
         computer_column = None
         best_score = -float('inf')  # αρχικοποίηση στο μείον άπειρο
         # βρίσκει την καταλληλότερη στήλη για να τοποθετήσει το πιόνι
@@ -164,7 +162,7 @@ class Game:
                 if score > best_score:
                     best_score = score
                     computer_column = col
-        return computer_row, computer_column 
+        return computer_column
 
 
     # Επιλογή τυχαίας θέσης από τον υπολογιστή και τοποθέτηση του πιονιού
@@ -177,34 +175,37 @@ class Game:
             # αν υπάρχει κενή θέση
             if computer_row != -1:
                 break
-        return computer_row, computer_column 
+        # ο υπολογιστής καταλαμβάνει την κενή θέση
+        # grid[computer_row][computer_column] = player
+        return computer_column
 
 
     # Επιλογή θέσης από τον υπολογιστή και τοποθέτηση του πιονιού
     def computer_turn(self, level):
         # ο υπολογιστής επιλέγει level (easy ή hard)
         if level == '1':
-            computer_row, computer_column = self.easy()
-        else:
-            computer_row, computer_column = self.hard()
+            computer_column = self.easy()
+        elif level == '2':
+            computer_column = self.hard(1)
+        else:   # level = '3'
+            computer_column = self.hard(3)
+        # εύρεση κενής θέσης (γραμμής)
+        computer_row = self.find_position(self.grid, computer_column)
         # ο υπολογιστής καταλαμβάνει την κενή θέση
         self.grid[computer_row][computer_column] = COMPUTER
-        return computer_column
+        return computer_row, computer_column
 
 
     # Επιλογή θέσης από τον παίκτη και τοποθέτηση του πιονιού
     def player_turn(self, player, player_column):
-        player_column -= 1
         # εύρεση κενής θέσης (γραμμής)
         player_row = self.find_position(self.grid, player_column)
         # αν η στήλη είναι γεμάτη, διαλέγει άλλη στήλη
         if player_row == -1:
-            print("This Column is Full!")
-            return -1
-        else:
-            # ο παίκτης καταλαμβάνει την κενή θέση
-            self.grid[player_row][player_column] = player
             return player_row
+        # ο παίκτης καταλαμβάνει την κενή θέση
+        self.grid[player_row][player_column] = player
+        return player_row
 
     # Ελέγχει αν υπάρχουν 4 όμοιες θέσεις οριζόντια
     def horizontal_four(self):
