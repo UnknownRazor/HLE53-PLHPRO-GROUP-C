@@ -72,7 +72,7 @@ class DataBase:
         self.connection.commit()
 
     # Δημιουργία ταξινομημένων παικτών βάση ELO (top 10)
-    def ranking(self):
+    def top_10(self):
         cursor = self.connection.cursor()
         sql_query = """SELECT * FROM users ORDER BY -elo LIMIT 0,10"""
 

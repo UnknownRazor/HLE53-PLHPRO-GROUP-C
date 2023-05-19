@@ -86,7 +86,7 @@ class MainMenu:
                                 font=font_fam_small_3, anchor="center")
         rank_canvas.create_line(rect_start + 115, 250, rect_start + 115, 430, fill="black", width=1.7)
 
-        top_players = db.ranking()
+        top_players = db.top_10()
         dropdown = 270
         for user in top_players:
             stats = f"{user[1]:>3}{user[2]:>10}{user[3]:>10}{user[4]:>11}{user[5]:>9}"
