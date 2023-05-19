@@ -36,7 +36,7 @@ class Game:
             if grid[row][selected_column] != 0:
                 return row-1
         # αν ολόκληρη η στήλη είναι κενή επιστρέφει την τελευταία γραμμή
-        return 5
+        return row-1
 
 
     # Επιλογή στήλης που θα αφήσει το πιόνι ο παίκτης
