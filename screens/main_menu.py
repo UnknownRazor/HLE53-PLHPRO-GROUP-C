@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-
+import os
+import json
 from modules.data import DataBase
 import PvBot
 import PvP
@@ -10,11 +11,14 @@ from modules.player import Player
 size1 = 7
 font_fam = ("Roboto", 18, "bold")
 font_fam2 = ("Roboto", 16, "bold")
+file_path = "last_user.json"
 
+if os.path.exists(file_path):
+    with open(file_path, "r") as file:
+        data = json.load(file)
 
 class MainMenu:
     def __init__(self):
-        self.remem = None
         self.winner = None
         self.canvas = None
         self.root = tk.Tk()
@@ -23,8 +27,16 @@ class MainMenu:
         self.name_field = None
         self.username = None
         self.username2 = None
-        self.create_login_menu()
         self.db = DataBase()
+        self.remem = tk.BooleanVar()
+        if os.path.exists(file_path):
+            temp_user = data.get("username")
+            self.username = temp_user
+            bg = PhotoImage(file="../assets/bg.png")
+            self.signup_login()
+            self.create_main_menu(bg)
+        else:
+            self.create_login_menu()
         # --------------------------------------------------------------------------------------------------------------#
         self.root.mainloop()
     def create_login_menu(self):
@@ -37,19 +49,33 @@ class MainMenu:
         self.name_field = Entry(self.root, bd=3, width=18, font=font_fam2)
         login_button = tk.Button(self.root, text='Login', width=10,
                                  command=lambda: [self.login(bg)], font=font_fam)
-        self.remember_me = tk.Checkbutton(self.root, text='Remember Me',variable=self.remem, onvalue=True, offvalue=False)
+        self.remember_me = tk.Checkbutton(self.root, text='Remember Me', variable=self.remem, onvalue=True, offvalue=False, font=font_fam)
+        exit_btn = tk.Button(self.root, text='Exit', bd=3, width=10, command=lambda: [self.root.destroy()],
+                             font=font_fam)
         canvas_login.create_window(552, 320, anchor="nw", window=login_button)
         canvas_login.create_window(522, 250, anchor="nw", window=self.name_field)
-
+        canvas_login.create_window(532, 390, anchor="nw", window=self.remember_me)
+        canvas_login.create_window(552, 460, anchor="nw", window=exit_btn)
     def login(self, bg):
         if self.name_field.get():
             self.username = self.name_field.get()
+            if self.remem.get() == True:
+                if not os.path.exists(file_path):
+                    with open("last_user.json", "w") as outfile:
+                        user = { "username" : self.username}
+                        json.dump(user, outfile)
             # change self.root title to main menu!
             self.root.title('Connect 4 App - ΠΛΗΠΡΟ/ΗΛΕ53 - Main Menu')
             # get username for the database from the class attribute
             self.signup_login()
             # after login in make the main menu and pass in the canvases
             self.create_main_menu(bg)
+    def logout(self):
+        self.canvas.destroy()
+        self.create_login_menu()
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
 
     def create_main_menu(self, bg):
         font_fam_small = ("Roboto", 13, "bold")
@@ -57,8 +83,9 @@ class MainMenu:
         font_fam_small_3 = ("Roboto", 9, "bold")
         rank_canvas = Canvas(self.root, width=1280, height=640)
         rank_canvas.pack(fill="both", expand=True)
-        self.canvas.delete("all")
-        self.canvas.destroy()
+        if self.canvas:
+            self.canvas.delete("all")
+            self.canvas.destroy()
         pvp_btn = tk.Button(self.root, text='PvP', bd=3, width=10, command=lambda: [self.pvp_clicked()],
                             font=font_fam)
         pve_btn = tk.Button(self.root, text='PvE', bd=3, width=10,
@@ -91,7 +118,8 @@ class MainMenu:
         rank_canvas.create_text(rect_start + 225, 260, text="Games / Wins / Losses / Draws / ELO",
                                 font=font_fam_small_3, anchor="center")
         rank_canvas.create_line(rect_start + 115, 250, rect_start + 115, 430, fill="black", width=1.7)
-
+        logout_btn = tk.Button(self.root, text='Logout', bd=3, width=10, command=lambda: self.logout(), font=font_fam)
+        rank_canvas.create_window(x-450, y-150, anchor="nw", window=logout_btn)
         top_players = self.db.top_10()
         dropdown = 270
         for user in top_players:
@@ -134,7 +162,6 @@ class MainMenu:
             self.canvas.destroy()
             self.username2 = self.name_field.get()
             pvp_screen = PvP.PVPScreen(self.username, self.username2, self.root)
-            self.canvas = pvp_screen.get_canvas()
         else:
             messagebox.showerror('Username Error', 'Error: You can not login as the same user!')
 
@@ -169,20 +196,14 @@ class MainMenu:
         if difficulty:
             self.canvas.destroy()
             pve_screen = PvBot.PVEScreen(self.username, size, self.root, True)
-            self.canvas = pve_screen.get_canvas()
         else:
             self.canvas.destroy()
             pve_screen = PvBot.PVEScreen(self.username, size, self.root)
-            self.canvas = pve_screen.get_canvas()
 
     def signup_login(self):  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!
         username_is = self.username
         new_user = Player(username_is)
         self.db.insert_table(new_user)
-
-    def game_end(self, winner):
-        self.winner = winner
-        self.root.destroy()
 
 
 if __name__ == "__main__":
