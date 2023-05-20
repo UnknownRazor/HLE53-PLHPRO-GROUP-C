@@ -1,12 +1,12 @@
 import sqlite3
 
+
 class DataBase:
     def __init__(self):
         self.connection = None
         self.connect_to_db()
         if self.connection is not None:
             self.create_table()
-
 
     # Σύνδεση στο Database
     def connect_to_db(self):
@@ -36,7 +36,6 @@ class DataBase:
         cursor.execute("SELECT * FROM users WHERE name=?", (player,))
         user = cursor.fetchone()
         return user
-
 
     # Εισαγωγή παίκτη στον πίνακα αν δεν υπάρχει
     # Η' ενημέρωση στοιχείων παίκτη από τον πίνακα

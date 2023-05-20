@@ -20,7 +20,7 @@ class Connect4(tk.Tk):
 
         # δημιουργία παραθύρου
         self.title("Connect 4")
-        self.iconbitmap("4.ico")
+        #self.iconbitmap("4.ico")
         self.geometry("600x550")
         self.resizable(width=False, height=False)
 
@@ -309,7 +309,7 @@ class TableFrame(tk.Frame):
         self.col_input = COLUMNS
         self.grid = [[0 for _ in range(self.row_input)] for _ in range(self.col_input)]
         self.turn = 1  # 1: κόκκινο / -1: κίτρινο
-        self.new_game = Game(self.row_input, self.col_input)
+        self.new_game = Game()
 
 
         # δημιουργία κεφαλίδας
@@ -317,13 +317,13 @@ class TableFrame(tk.Frame):
         self.vs_label.configure(font=lbl_font, background=blue_bg)
 
         # κενά πιόνια
-        self.white = Image.open("white.jpg")
+        self.white = Image.open("../assets/white.png")
         self.white = ImageTk.PhotoImage(self.white)
         # κόκκινα πιόνια
-        self.red = Image.open("red.jpg")
+        self.red = Image.open("../assets/red.png")
         self.red = ImageTk.PhotoImage(self.red)
         # κίτρινα πιόνια
-        self.yellow = Image.open("yellow.jpg")
+        self.yellow = Image.open("../assets/yellow.png")
         self.yellow = ImageTk.PhotoImage(self.yellow)
 
         # δυναμική δημιουργία κουμπιών στηλών
@@ -441,7 +441,7 @@ class WinFrame(tk.Frame):
 class RankFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg=blue_bg)
-        my_conn = sqlite3.connect('connect4.db')
+        my_conn = sqlite3.connect('../db/connect4_PythonDB.db')
 
         self.name = tk.Label(self, padx=25, pady=10, text='Name')
         self.name.configure(font=stats_font, background=blue_bg)

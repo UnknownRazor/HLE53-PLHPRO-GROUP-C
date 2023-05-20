@@ -4,14 +4,11 @@ import modules.gamemode as gm
 
 
 class PVPScreen:
-    def __init__(self, username, size, difficulty=False):
+    def __init__(self, username, username2, root):
         self.username = username
-        self.size = size
-        self.difficulty = difficulty
-        root = tk.Tk()
-        root.resizable(False, False)
-        root.geometry("1280x640")
-        root.iconbitmap('../assets/logo.ico')
+        self.size = 7
+        self.username2 = username2
+        self.root = root
         font_fam = ("Roboto", 18, "bold")
         font_fam2 = ("Roboto", 14, "bold")
         bg = PhotoImage(file="../assets/bg.png")
@@ -34,11 +31,11 @@ class PVPScreen:
         #c4.findpos(counter-1, array)
         #for counter in range(0,size):
             #menu_buttons.append(tk.Button(root, text=f'{counter + 1}', bd=0, width=4, command=lambda button_id=counter: [c4.choice(array, 1, button_id, button_array), print(array)], font=font_fam))
-        for counter in range(0, size):
+        for counter in range(0, self.size):
             menu_buttons.append(counter)
         column_buttons = self.create_buttons(menu_buttons, canvas1, 0, 0, False, True)
         self.root = root
-        play_list = self.create_button_array(size, canvas1, font_fam)
+        play_list = self.create_button_array(self.size, canvas1, font_fam)
         button_array = play_list[1]
         #photo_image = PhotoImage(file="../assets/pawn.png")
         #image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
@@ -46,8 +43,8 @@ class PVPScreen:
         canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
         #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
         # create gamemode instance
-        self.pve_gm = gm.PVPMode(button_array, canvas1)
-        root.mainloop()
+        self.pvp_gm = gm.PVPMode(button_array, canvas1, self.username, self.username2)
+        self.root.mainloop()
 
     def create_button_array(self, size, canvas1, font_fam):
         buttons_array = []
@@ -111,8 +108,9 @@ class PVPScreen:
 
     def button_clicked(self,button_id, button_array):
         #print(f"Button {button_id} clicked!")
-        self.pve_gm.play(button_id, self.root)
+        self.pvp_gm.play(button_id, self.root)
         #c4.choice(array, 1, button_id, button_array)
+
 
     def on_mouse_move(self,event, canvas1, image_id):
         x, y = event.x, event.y
@@ -125,9 +123,5 @@ class PVPScreen:
             # Hide the image if the mouse is not within the specified bounds
             canvas1.itemconfig(image_id, state="hidden")
 
-    def get_root(self):
-        return self.root
-
-
-if __name__ == "__main__":
-    pve = PVPScreen("Hello", 7)
+    def get_canvas(self):
+        return self.canvas

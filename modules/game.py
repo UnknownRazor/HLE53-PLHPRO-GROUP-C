@@ -12,19 +12,22 @@ COLUMNS = 7
 MAX_COL = 10
 MAX_ROW = 10
 
+
 class Game:
-    def __init__(self, ROWS=ROWS, COLUMNS=COLUMNS):
+    def __init__(self, username, username2 = "Computer"):
         # δημιουργία κενού ταμπλό
         self.rows = ROWS
         self.columns = COLUMNS
         self.grid = self.create_grid(self.rows, self.columns)
         self.result = None
         self.message = None
-        self.player1 = Player("")
-        self.player2 = Player("Computer")
+        self.player1 = Player(username)
+        self.player2 = Player(username2)
+
 
     def create_grid(self, rows, columns):
         return [[EMPTY for column in range(columns)] for row in range(rows)]
+
 
     # Εύρεση κατώτερης κενής θέσης
     def find_position(self, grid, selected_column):

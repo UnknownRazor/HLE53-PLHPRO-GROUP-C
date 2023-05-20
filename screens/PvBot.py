@@ -37,7 +37,7 @@ class PVEScreen:
         self.canvas.bind("<Button-1>",
                          lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, self.button_array))
         # create gamemode instance
-        self.pve_gm = gm.PVEMode(self.button_array, self.canvas, difficulty)
+        self.game = gm.PVEMode(self.button_array, self.canvas, self.username,difficulty)
         self.root.mainloop()
 
     def create_button_array(self, size):
@@ -100,7 +100,7 @@ class PVEScreen:
             counter += 1
 
     def button_clicked(self, button_id):
-        self.pve_gm.play(button_id, self.root)
+        self.game.play(button_id, self.root)
 
     # Εμφανίζει την εικόνα όταν είναι εντός ορίων
     # και ακολουθεί το ποντίκι
@@ -114,13 +114,3 @@ class PVEScreen:
 
     def get_canvas(self):
         return self.canvas
-
-
-class PVPScreen(PVEScreen):
-    def __init__(self, username, username2, root, size):
-        super().__init__(username, username2, root, size)
-        self.username2 = username2
-        self.pve_gm = gm.PVPMode(self.button_array, self.canvas)
-
-    def button_clicked(self, button_id):
-        self.pve_gm.play(button_id, self.root)
