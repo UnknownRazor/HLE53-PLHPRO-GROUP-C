@@ -3,6 +3,7 @@ import modules.connect4 as c4
 from tkinter import PhotoImage
 from modules.game import Game
 from modules.data import DataBase
+import threading
 
 class PVPMode:
     def __init__(self, button_array, canvas, username, username2):
@@ -99,13 +100,15 @@ class PVEMode(PVPMode):
                 self.can_play = True
             self.check_won(root)
             # bot choice
-            if self.can_play == False:
-                if self.difficulty == True:
-                    bot_row, bot_col = self.game.computer_turn("2")
-                    self.animate(bot_row, bot_col)
-                else:
-                    bot_row, bot_col = self.game.computer_turn("1")
-                    self.animate(bot_row, bot_col)
-                self.turn = 1
-                self.check_won(root)
-                self.can_play = True
+            thread = threading.Thread(target=self.make_bot_turn, args=(root,))
+            thread.start()
+    def make_bot_turn(self, root):
+        if self.can_play == False:
+            if self.difficulty == True:
+                bot_row, bot_col = self.game.computer_turn("3")
+            else:
+                bot_row, bot_col = self.game.computer_turn("1")
+            self.animate(bot_row, bot_col)
+            self.turn = 1
+            self.check_won(root)
+            self.can_play = True

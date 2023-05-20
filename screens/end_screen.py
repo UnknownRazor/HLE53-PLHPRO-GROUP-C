@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import *
 import os
-import json
 from modules.data import DataBase
 from modules.game import Game
 from screens.main_menu import MainMenu
