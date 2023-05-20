@@ -41,7 +41,7 @@ class PVPScreen:
         self.canvas.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons))
         self.canvas.bind("<Motion>", lambda event: self.on_mouse_move(event, menu_buttons, column_buttons))
         # create gamemode instance
-        self.pvp_gm = gm.PVPMode(button_array, self.canvas, self.username, self.username2)
+        self.pvp_gm = gm.PVPMode(button_array, self.canvas, self.username, self.username2, self.root)
         self.root.mainloop()
 
     def create_hover(self, col_array, coord_list):

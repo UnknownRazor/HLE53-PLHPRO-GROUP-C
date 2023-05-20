@@ -29,7 +29,7 @@ class end_screen(Tk):
         else:
             self.canvas.create_text(632, 220, text=f"Winner:", font=font_fam,
                                    anchor="center", fill="black")
-            self.canvas.create_text(632, 320, text=f"{username1}", font=font_fam_small,
+            self.canvas.create_text(632, 320, text=f"{winner}", font=font_fam_small,
                                    anchor="center", fill="black")
         main_button = tk.Button(self.root, text='Main menu', width=12,
                                  command=lambda: [self.main_menu()], font=("Roboto", 18, "bold"))

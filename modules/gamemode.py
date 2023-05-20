@@ -1,5 +1,5 @@
 import sys
-
+import threading
 sys.path.append('../modules/')
 sys.path.append('../screens/')
 
@@ -8,7 +8,7 @@ import connect4 as c4
 from tkinter import PhotoImage
 from game import Game
 from data import DataBase
-import threading
+
 
 
 class PVPMode:
@@ -27,6 +27,7 @@ class PVPMode:
         self.grid = self.game.grid
         self.root = root
         self.db = DataBase()
+        self.thread = None
 
     def play(self, user_choice):
         if self.can_play:
@@ -46,6 +47,8 @@ class PVPMode:
     def check_won(self):
         won = self.game.game_over()
         if won:
+            if self.thread:
+                del(self.thread)
             if won == 1:
                 self.upd_db()
                 End = end.end_screen(self.canvas, self.root, self.username, self.username)
@@ -55,6 +58,8 @@ class PVPMode:
                 if self.username2 == None:
                     self.upd_db()
                     End = end.end_screen(self.canvas, self.root, self.username, "Computer")
+                    if self.thread:
+                        self.thread.terminate()
                     self.root.mainloop()
                 else:
                     End = end.end_screen(self.canvas, self.root, self.username, self.username2)
@@ -114,8 +119,8 @@ class PVEMode(PVPMode):
                 self.can_play = True
             self.check_won()
             # bot choice
-            thread = threading.Thread(target=self.make_bot_turn)
-            thread.start()
+            self.thread = threading.Thread(target=self.make_bot_turn)
+            self.thread.start()
             self.check_won()
 
     def make_bot_turn(self):
