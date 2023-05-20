@@ -14,6 +14,7 @@ font_fam2 = ("Roboto", 16, "bold")
 
 class MainMenu:
     def __init__(self):
+        self.remem = None
         self.winner = None
         self.canvas = None
         self.root = tk.Tk()
@@ -36,7 +37,7 @@ class MainMenu:
         self.name_field = Entry(self.root, bd=3, width=18, font=font_fam2)
         login_button = tk.Button(self.root, text='Login', width=10,
                                  command=lambda: [self.login(bg)], font=font_fam)
-        #self.remember_me = tk.Checkbutton(self.root, text='Python',variable=self.remem, onvalue=1, offvalue=0, command=print_selection)
+        self.remember_me = tk.Checkbutton(self.root, text='Remember Me',variable=self.remem, onvalue=True, offvalue=False)
         canvas_login.create_window(552, 320, anchor="nw", window=login_button)
         canvas_login.create_window(522, 250, anchor="nw", window=self.name_field)
 
