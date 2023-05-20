@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
-
+import os
+import json
 from modules.data import DataBase
 from modules.game import Game
 from screens.main_menu import MainMenu
@@ -9,6 +10,7 @@ class end_screen(Tk):
     def __init__(self, canvas, root, username1):
         canvas.destroy()
         self.root = root
+        self.root.geometry("1280x640")
         font_fam = ("Roboto", 80, "bold")
         font_fam_small = ("Roboto", 60, "bold")
         self.canvas = Canvas(self.root, width=1280, height=640)
@@ -31,7 +33,7 @@ class end_screen(Tk):
         # self.remember_me = tk.Checkbutton(self.root, text='Python',variable=self.remem, onvalue=1, offvalue=0, command=print_selection)
         self.canvas.create_window(552, 380, anchor="nw", window=main_button)
         exit_button = tk.Button(self.root, text='Exit', width=12,
-                                command=lambda: [self.root.destroy()], font=("Roboto", 18, "bold"))
+                                command=lambda: [self.exit()], font=("Roboto", 18, "bold"))
         # self.remember_me = tk.Checkbutton(self.root, text='Python',variable=self.remem, onvalue=1, offvalue=0, command=print_selection)
         self.canvas.create_window(552, 440, anchor="nw", window=exit_button)
         self.root.mainloop()
@@ -41,3 +43,8 @@ class end_screen(Tk):
         x = MainMenu()
         db = DataBase()
         game = Game()
+    def exit(self):
+        file_path = "last_user.json"
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        self.root.destroy()

@@ -5,85 +5,86 @@ import modules.gamemode as gm
 
 class PVPScreen:
     def __init__(self, username, username2, root):
+        self.image_items = []
         self.username = username
         self.size = 7
         self.username2 = username2
         self.root = root
         font_fam = ("Roboto", 18, "bold")
-        font_fam2 = ("Roboto", 14, "bold")
         bg = PhotoImage(file="../assets/bg.png")
         #
         # --------------------------------------------------------------------------------------------------------------#
         root.title('Connect 4 App - ΠΛΗΠΡΟ/ΗΛΕ53 - PvP')
-        canvas1 = Canvas(root, width=1280, height=640)
-        canvas1.pack(fill="both", expand=True)
-        bg_canvas = canvas1.create_image(0, 0, image=bg, anchor="nw")
-        self.canvas = canvas1
+        self.canvas = Canvas(root, width=1280, height=640)
+        self.canvas.pack(fill="both", expand=True)
+        self.canvas.create_image(0, 0, image=bg, anchor="nw")
         # Exit button creation #
         Exit_button = tk.Button(root, text='Exit', bd=5, width=3, command=root.destroy, font=font_fam,
                                 highlightcolor="black")
-        Exit_UI = canvas1.create_window(12, 20, anchor="nw", window=Exit_button)
+        exit_ui = self.canvas.create_window(12, 20, anchor="nw", window=Exit_button)
         # ----------- #
         # Line next to exit button #
-        canvas1.create_line(82.8, 0, 82.8, 640, fill="black", width=2.5)
+        self.canvas.create_line(82.8, 0, 82.8, 640, fill="black", width=2.5)
         # ---------- #
         menu_buttons = []
-        #c4.findpos(counter-1, array)
-        #for counter in range(0,size):
-            #menu_buttons.append(tk.Button(root, text=f'{counter + 1}', bd=0, width=4, command=lambda button_id=counter: [c4.choice(array, 1, button_id, button_array), print(array)], font=font_fam))
         for counter in range(0, self.size):
             menu_buttons.append(counter)
-        column_buttons = self.create_buttons(menu_buttons, canvas1, 0, 0, False, True)
+        column_buttons = self.create_buttons(menu_buttons, 0, 0, False, True)
         self.root = root
-        play_list = self.create_button_array(self.size, canvas1, font_fam)
+        self.create_hover(menu_buttons, column_buttons)
+        play_list = self.create_button_array()
         button_array = play_list[1]
-        #photo_image = PhotoImage(file="../assets/pawn.png")
-        #image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
-        #canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
-        canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons))
-        #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1, None, menu_buttons, column_buttons, button_array))
+
+        self.canvas.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons))
+        self.canvas.bind("<Motion>", lambda event: self.on_mouse_move(event, menu_buttons, column_buttons))
         # create gamemode instance
-        self.pvp_gm = gm.PVPMode(button_array, canvas1, self.username, self.username2)
+        self.pvp_gm = gm.PVPMode(button_array, self.canvas, self.username, self.username2)
         self.root.mainloop()
 
-    def create_button_array(self, size, canvas1, font_fam):
+    def create_hover(self, col_array, coord_list):
+        self.images = []  # Keep references to PhotoImage objects
+        for button in col_array:
+            coord_list_copy = coord_list[button]
+            image = tk.PhotoImage(file="../assets/white.png")
+            self.images.append(image)  # Store the reference to the PhotoImage
+            self.image_items.append(
+                self.canvas.create_image(coord_list_copy[0], coord_list_copy[2], image=image, anchor="nw",
+                                         state="hidden"))
+
+    def create_button_array(self):
         buttons_array = []
         buttons_arrays = []
         y = 10
-        #pil_img = Image.open("white.jpg")
+        # pil_img = Image.open("white.jpg")
         self.img = PhotoImage(file="../assets/white.png")
-        for row in range(0, size-1):
-            for col in range(0, size):
-                button = tk.Label(canvas1, image=self.img, borderwidth=0, highlightthickness=0)
+        for row in range(0, self.size - 1):
+            for col in range(0, self.size):
+                button = tk.Label(self.canvas, image=self.img, borderwidth=0, highlightthickness=0)
                 buttons_arrays.append(button)
             buttons_array.append(buttons_arrays)
-            if len(buttons_arrays) >= size:
+            if len(buttons_arrays) >= self.size:
                 buttons_arrays = []
         for rows in buttons_array:
-            x = 0
-            y += 55
-            button_canvas_array = self.create_buttons(rows, canvas1, x, y, True)
+            x = 5
+            y += 80
+            button_canvas_array = self.create_buttons(rows, x, y, True)
         return [button_canvas_array, buttons_array]
 
-    def create_buttons(self, button_list, canvas1, offsetX, offsetY, half=False, button_coord = False):
+    def create_buttons(self, button_list, offsetX, offsetY, half=False, button_coord=False):
         x = 92 + offsetX
         y = 10 + offsetY
         button_canvas_array = []
         button_coords = []
         button_coords_list = []
-        if button_coord == True:
+        if button_coord:
             for button in button_list:
-                button_coords = []
-                button_coords.append(x)
-                button_coords.append(x+70)
-                button_coords.append(y)
-                button_coords.append(y+60)
+                button_coords = [x, x + 80, y, y + 65]
                 button_coords_list.append(button_coords)
-                x += 70
+                x += 80
             return button_coords_list
         for button in button_list:
-            button_canvas = canvas1.create_window(x, y, anchor="nw", window=button)
-            x += 70
+            button_canvas = self.canvas.create_window(x, y, anchor="nw", window=button)
+            x += 80
             button_coords.append(x)
             button_coords.append(y)
             if half:
@@ -91,13 +92,13 @@ class PVPScreen:
             button_canvas_array.append(button_canvas)
         return button_canvas_array
 
-    def is_within_button(self,x, y, button_coords):
+    def is_within_button(self, x, y, button_coords):
         button_x1, button_x2, button_y1, button_y2 = button_coords
-        if button_x1 <= x <= button_x2 and y >= button_y1 and y <= button_y2:
+        if button_x1 <= x <= button_x2 and button_y1 <= y <= button_y2:
             return True
         return False
 
-    def on_canvas_click(self,event, col_array, coord_list):
+    def on_canvas_click(self, event, col_array, coord_list):
         x, y = event.x, event.y
         counter = 0
         for button in col_array:
@@ -105,35 +106,36 @@ class PVPScreen:
             if self.is_within_button(x, y, coord_list_copy):
                 self.button_clicked(button)
             counter += 1
+        self.on_mouse_move(event, col_array, coord_list)
 
-    def button_clicked(self,button_id):
-        #print(f"Button {button_id} clicked!")
+    def button_clicked(self, button_id):
+        # print(f"Button {button_id} clicked!")
         self.pvp_gm.play(button_id, self.root)
-        #c4.choice(array, 1, button_id, button_array)
+        # c4.choice(array, 1, button_id, button_array)
 
-
-    def on_mouse_move(self,event, canvas1, image_id, col_array, coord_list, button_array):
+    def on_mouse_move(self, event, col_array, coord_list):
         x, y = event.x, event.y
-        if 90 < x < 580 and 10 < y < 60:
+        if 90 < x < 680 and 10 < y < 120:
             counter = 0
             # Show the image if the mouse is within the specified bounds
             for button in col_array:
                 coord_list_copy = coord_list[counter]
                 if self.is_within_button(x, y, coord_list_copy):
-                    self.button_hover(button)
+                    image_item = self.image_items[counter]
+                    if self.pvp_gm.turn == 1:
+                        image = self.images[counter]  # Use the stored reference to the PhotoImage
+                        image.configure(file="../assets/red.png")  # Update the image
+                    elif self.pvp_gm.turn == 2:
+                        image = self.images[counter]  # Use the stored reference to the PhotoImage
+                        image.configure(file="../assets/yellow.png")  # Update the image
+                    self.canvas.itemconfigure(image_item, state="normal", image=image)
                 else:
-                    self.button_hover_leave(button)
+                    image_item = self.image_items[counter]
+                    self.canvas.itemconfigure(image_item, state="hidden")
+
                 counter += 1
-            #canvas1.itemconfig(image_id, state="normal")
-            # Move the image to follow the mouse
-            #canvas1.coords(image_id, x/4, y/4)
         else:
-            # Hide the image if the mouse is not within the specified bounds
-            #canvas1.itemconfig(image_id, state="hidden")
-            pass
-    def button_hover(self, button):
-        button["bg"] = "red"
-        print(button)
-    def button_hover_leave(self, button):
-        button["bg"] = "white"
-        print(button)
+            # Hide all the images if the mouse is not within the specified bounds
+            for counter in range(len(col_array)):
+                image_item = self.image_items[counter]
+                self.canvas.itemconfigure(image_item, state="hidden")
