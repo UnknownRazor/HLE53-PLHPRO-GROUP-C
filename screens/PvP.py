@@ -40,8 +40,8 @@ class PVPScreen:
         #photo_image = PhotoImage(file="../assets/pawn.png")
         #image_id = canvas1.create_image(0, 0, image=photo_image, anchor="nw")
         #canvas1.coords(image_id, 400 - 380 / 2, 300 - 270 / 2)
-        canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons, button_array))
-        #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1,image_id))
+        canvas1.bind("<Button-1>", lambda event: self.on_canvas_click(event, menu_buttons, column_buttons))
+        #canvas1.bind("<Motion>", lambda event: self.on_mouse_move(event, canvas1, None, menu_buttons, column_buttons, button_array))
         # create gamemode instance
         self.pvp_gm = gm.PVPMode(button_array, canvas1, self.username, self.username2)
         self.root.mainloop()
@@ -97,31 +97,43 @@ class PVPScreen:
             return True
         return False
 
-    def on_canvas_click(self,event, col_array, coord_list, button_array):
+    def on_canvas_click(self,event, col_array, coord_list):
         x, y = event.x, event.y
         counter = 0
         for button in col_array:
             coord_list_copy = coord_list[counter]
             if self.is_within_button(x, y, coord_list_copy):
-                self.button_clicked(button, button_array)
+                self.button_clicked(button)
             counter += 1
 
-    def button_clicked(self,button_id, button_array):
+    def button_clicked(self,button_id):
         #print(f"Button {button_id} clicked!")
         self.pvp_gm.play(button_id, self.root)
         #c4.choice(array, 1, button_id, button_array)
 
 
-    def on_mouse_move(self,event, canvas1, image_id):
+    def on_mouse_move(self,event, canvas1, image_id, col_array, coord_list, button_array):
         x, y = event.x, event.y
         if 90 < x < 580 and 10 < y < 60:
+            counter = 0
             # Show the image if the mouse is within the specified bounds
-            canvas1.itemconfig(image_id, state="normal")
+            for button in col_array:
+                coord_list_copy = coord_list[counter]
+                if self.is_within_button(x, y, coord_list_copy):
+                    self.button_hover(button)
+                else:
+                    self.button_hover_leave(button)
+                counter += 1
+            #canvas1.itemconfig(image_id, state="normal")
             # Move the image to follow the mouse
-            canvas1.coords(image_id, x/4, y/4)
+            #canvas1.coords(image_id, x/4, y/4)
         else:
             # Hide the image if the mouse is not within the specified bounds
-            canvas1.itemconfig(image_id, state="hidden")
-
-    def get_canvas(self):
-        return self.canvas
+            #canvas1.itemconfig(image_id, state="hidden")
+            pass
+    def button_hover(self, button):
+        button["bg"] = "red"
+        print(button)
+    def button_hover_leave(self, button):
+        button["bg"] = "white"
+        print(button)
