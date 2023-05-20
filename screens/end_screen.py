@@ -1,12 +1,15 @@
 import tkinter as tk
 from tkinter import *
 import os
-from modules.data import DataBase
-from modules.game import Game
-from screens.main_menu import MainMenu
+import sys
+sys.path.append('../modules')
+sys.path.append('../screens')
+from data import DataBase
+from game import Game
+from main_menu import MainMenu
 
 class end_screen(Tk):
-    def __init__(self, canvas, root, username1):
+    def __init__(self, canvas, root, username1, winner):
         canvas.destroy()
         self.root = root
         self.root.geometry("1280x640")
@@ -16,10 +19,11 @@ class end_screen(Tk):
         bg = PhotoImage(file="../assets/bg.png")
         self.canvas.pack(fill="both", expand=True)
         self.canvas.create_image(0, 0, image=bg, anchor="nw")
-        if username1 == 3:
+        self.username = username1
+        if winner == 3:
             self.canvas.create_text(632, 250, text=f"Draw", font=font_fam,
                                    anchor="center", fill="black")
-        elif username1 == "Computer":
+        elif winner == "Computer":
             self.canvas.create_text(632, 250, text=f"You Lose!", font=font_fam,
                                    anchor="center", fill="black")
         else:
@@ -39,7 +43,7 @@ class end_screen(Tk):
 
     def main_menu(self):
         self.root.destroy()
-        x = MainMenu()
+        x = MainMenu(self.username)
         db = DataBase()
         game = Game()
     def exit(self):

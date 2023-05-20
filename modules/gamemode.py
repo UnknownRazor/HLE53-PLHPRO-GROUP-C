@@ -1,12 +1,18 @@
-import screens.end_screen as end
-import modules.connect4 as c4
+import sys
+
+sys.path.append('../modules/')
+sys.path.append('../screens/')
+
+import end_screen as end
+import connect4 as c4
 from tkinter import PhotoImage
-from modules.game import Game
-from modules.data import DataBase
+from game import Game
+from data import DataBase
 import threading
 
+
 class PVPMode:
-    def __init__(self, button_array, canvas, username, username2):
+    def __init__(self, button_array, canvas, username, username2, root):
         self.turn = 1
         self.button_array = button_array
         self.canvas = canvas
@@ -19,9 +25,10 @@ class PVPMode:
         self.username2 = username2
         self.game = Game(self.username, self.username2)
         self.grid = self.game.grid
+        self.root = root
         self.db = DataBase()
 
-    def play(self, user_choice, root):
+    def play(self, user_choice):
         if self.can_play:
             self.can_play = False
             row = self.game.player_turn(self.turn, user_choice)
@@ -33,23 +40,29 @@ class PVPMode:
                     self.turn = 1
             else:
                 self.can_play = True
-            self.check_won(root)
+            self.check_won()
             self.can_play = True
-    def check_won(self, root):
+
+    def check_won(self):
         won = self.game.game_over()
         if won:
             if won == 1:
                 self.upd_db()
-                End = end.end_screen(self.canvas, root, self.username)
+                End = end.end_screen(self.canvas, self.root, self.username, self.username)
+                self.root.mainloop()
             elif won == 2:
                 self.upd_db()
                 if self.username2 == None:
-                    End = end.end_screen(self.canvas, root, "Computer")
+                    self.upd_db()
+                    End = end.end_screen(self.canvas, self.root, self.username, "Computer")
+                    self.root.mainloop()
                 else:
-                    End = end.end_screen(self.canvas, root, self.username2)
+                    End = end.end_screen(self.canvas, self.root, self.username, self.username2)
+                    self.root.mainloop()
             elif won == 3:
                 self.upd_db()
-                End = end.end_screen(self.canvas, root, won)
+                End = end.end_screen(self.canvas, self.root, self.username, won)
+                self.root.mainloop()
 
     def upd_db(self):
         self.db.insert_table(self.game.player1)
@@ -83,13 +96,14 @@ class PVPMode:
         else:
             button.config(image=self.img_array[2])
 
+
 class PVEMode(PVPMode):
-    def __init__(self, button_array, canvas, username, difficulty=False, username2=None):
-        super().__init__(button_array, canvas, username, username2)
+    def __init__(self, button_array, canvas, username, root, difficulty=False, username2=None):
+        super().__init__(button_array, canvas, username, username2, root)
         self.difficulty = difficulty
         self.username2 = username2
 
-    def play(self, user_choice, root):
+    def play(self, user_choice):
         if self.can_play:
             self.can_play = False
             row = self.game.player_turn(self.turn, user_choice)
@@ -98,11 +112,13 @@ class PVEMode(PVPMode):
                 self.turn = 2
             else:
                 self.can_play = True
-            self.check_won(root)
+            self.check_won()
             # bot choice
-            thread = threading.Thread(target=self.make_bot_turn, args=(root,))
+            thread = threading.Thread(target=self.make_bot_turn)
             thread.start()
-    def make_bot_turn(self, root):
+            self.check_won()
+
+    def make_bot_turn(self):
         if self.can_play == False:
             if self.difficulty == True:
                 bot_row, bot_col = self.game.computer_turn("3")
@@ -110,5 +126,4 @@ class PVEMode(PVPMode):
                 bot_row, bot_col = self.game.computer_turn("1")
             self.animate(bot_row, bot_col)
             self.turn = 1
-            self.check_won(root)
             self.can_play = True

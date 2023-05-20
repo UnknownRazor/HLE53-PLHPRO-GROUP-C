@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import *
-import modules.gamemode as gm
+import sys
+sys.path.append('../modules')
+sys.path.append('../screens')
+import gamemode as gm
 
 
 class PVPScreen:
@@ -110,7 +113,7 @@ class PVPScreen:
 
     def button_clicked(self, button_id):
         # print(f"Button {button_id} clicked!")
-        self.pvp_gm.play(button_id, self.root)
+        self.pvp_gm.play(button_id)
         # c4.choice(array, 1, button_id, button_array)
 
     def on_mouse_move(self, event, col_array, coord_list):

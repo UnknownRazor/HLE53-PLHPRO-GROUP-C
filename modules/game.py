@@ -1,7 +1,11 @@
 import copy
-from modules.data import *
+import sys
+sys.path.append('../modules')
+sys.path.append('../screens')
+from data import *
 from random import randrange
-from modules.player import Player
+
+from player import Player
 
 EMPTY = 0
 PLAYER1 = 1

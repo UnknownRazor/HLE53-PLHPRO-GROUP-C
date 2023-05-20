@@ -3,10 +3,13 @@ from tkinter import *
 from tkinter import messagebox
 import os
 import json
-from modules.data import DataBase
+import sys
+sys.path.append('../modules')
+sys.path.append('../screens')
+from data import DataBase
 import PvBot
 import PvP
-from modules.player import Player
+from player import Player
 
 size1 = 7
 font_fam = ("Roboto", 18, "bold")
@@ -18,7 +21,7 @@ if os.path.exists(file_path):
         data = json.load(file)
 
 class MainMenu:
-    def __init__(self):
+    def __init__(self, user=None):
         self.winner = None
         self.canvas = None
         self.root = tk.Tk()
@@ -32,6 +35,11 @@ class MainMenu:
         if os.path.exists(file_path):
             temp_user = data.get("username")
             self.username = temp_user
+            bg = PhotoImage(file="../assets/bg.png")
+            self.signup_login()
+            self.create_main_menu(bg)
+        elif user is not None:
+            self.username = user
             bg = PhotoImage(file="../assets/bg.png")
             self.signup_login()
             self.create_main_menu(bg)

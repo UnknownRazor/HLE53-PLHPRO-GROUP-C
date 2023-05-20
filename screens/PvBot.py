@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import *
-import modules.gamemode as gm
+import sys
+sys.path.append('../modules')
+sys.path.append('../screens')
+import gamemode as gm
 
 font_fam = ("Roboto", 18, "bold")
 
@@ -40,7 +43,7 @@ class PVEScreen:
                          lambda event: self.on_canvas_click(event, menu_buttons, column_buttons))
         self.canvas.bind("<Motion>", lambda event: self.on_mouse_move(event, menu_buttons, column_buttons))
         # create gamemode instance
-        self.game = gm.PVEMode(self.button_array, self.canvas, self.username,difficulty)
+        self.game = gm.PVEMode(self.button_array, self.canvas, self.username, self.root, difficulty)
         self.root.mainloop()
 
     def create_hover(self, col_array, coord_list):
@@ -112,11 +115,12 @@ class PVEScreen:
 
     def button_clicked(self, button_id):
         # print(f"Button {button_id} clicked!")
-        self.game.play(button_id, self.root)
+        self.game.play(button_id)
         # c4.choice(array, 1, button_id, button_array)
 
     def on_mouse_move(self, event, col_array, coord_list):
         x, y = event.x, event.y
+        self.game.check_won()
         if 90 < x < 680 and 10 < y < 120:
             counter = 0
             # Show the image if the mouse is within the specified bounds
