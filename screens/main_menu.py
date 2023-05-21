@@ -170,6 +170,8 @@ class MainMenu:
             self.canvas.destroy()
             self.username2 = self.name_field.get()
             pvp_screen = PvP.PVPScreen(self.username, self.username2, self.root)
+        elif self.name_field.get() == "":
+            messagebox.showerror('Username Error', 'Error: Username field can not be empty!')
         else:
             messagebox.showerror('Username Error', 'Error: You can not login as the same user!')
 
