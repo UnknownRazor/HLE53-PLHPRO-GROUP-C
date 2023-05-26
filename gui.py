@@ -296,7 +296,7 @@ class App(tk.Tk):
             button_canvas_array = self.create_buttons(buttons_grid[row], x, y, True)
         return [button_canvas_array, buttons_grid]
 
-    # δημιουργεί και τοποθετεί τα κουμπιά σε συγκεκριμένες συντεταγμένες
+    # δημιουργεί τα κουμπιά των στηλών (πάνω από το ταμπλό)
     def create_buttons(self, button_list, offsetX, offsetY, half=False, button_coord=False):
         x = 92 + offsetX
         y = 10 + offsetY
