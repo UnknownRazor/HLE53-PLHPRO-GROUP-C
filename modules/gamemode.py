@@ -2,7 +2,7 @@ import sys
 import threading
 sys.path.append('../modules/')
 sys.path.append('../screens/')
-
+from threading import Thread
 import end_screen as end
 import connect4 as c4
 from tkinter import PhotoImage
@@ -34,7 +34,7 @@ class PVPMode:
             self.can_play = False
             row = self.game.player_turn(self.turn, user_choice)
             if row != -1:
-                self.animate(row, user_choice)
+                thread = threading.Thread(target=self.animate(row, user_choice))
                 if self.turn == 1:
                     self.turn = 2
                 else:
@@ -113,22 +113,40 @@ class PVEMode(PVPMode):
             self.can_play = False
             row = self.game.player_turn(self.turn, user_choice)
             if row != -1:
-                self.animate(row, user_choice)
+                thread_anim = threading.Thread(target=self.animate(row, user_choice))
+                thread_anim.start()
                 self.turn = 2
             else:
                 self.can_play = True
             self.check_won()
             # bot choice
-            self.thread = threading.Thread(target=self.make_bot_turn)
-            self.thread.start()
+            self.make_bot_turn()
             self.check_won()
 
+
     def make_bot_turn(self):
-        if self.can_play == False:
-            if self.difficulty == True:
-                bot_row, bot_col = self.game.computer_turn("3")
+        if not self.can_play:
+            if self.difficulty:
+                thread_com = ThreadWithReturnValue(target=self.game.computer_turn, args=("3",))
+                thread_com.start()
+                bot_row, bot_col = thread_com.join()
             else:
                 bot_row, bot_col = self.game.computer_turn("1")
             self.animate(bot_row, bot_col)
             self.turn = 1
             self.can_play = True
+
+
+class ThreadWithReturnValue(Thread):
+    def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+        Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
+
+        self._return = None
+
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
+
+    def join(self):
+        Thread.join(self)
+        return self._return
