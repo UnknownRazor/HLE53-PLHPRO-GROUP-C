@@ -17,7 +17,6 @@ font_fam_small2 = ("Roboto", 11, "bold")
 font_fam_small3 = ("Roboto", 9, "bold")
 
 
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -54,6 +53,7 @@ class App(tk.Tk):
         self.img_array = [self.white, self.red, self.yellow]
         self.won = False
         self.thread = None
+
     # -------------------------------------------------------------------------------------------------------------
 
     # έλεγχος αν ο χρήστης παραμένει συνδεμένος
@@ -92,7 +92,7 @@ class App(tk.Tk):
             if self.remem.get():
                 if not os.path.exists(self.file_path):
                     with open("last_user.json", "w") as outfile:
-                        user = { "username" : self.username}
+                        user = {"username": self.username}
                         json.dump(user, outfile)
             self.game.player1 = Player(self.username)
             self.db.insert_table(self.game.player1)
@@ -145,7 +145,7 @@ class App(tk.Tk):
                                 font=font_fam_small3, anchor="center")
         self.canvas.create_line(rect_start + 115, 250, rect_start + 115, 430, fill="black", width=1.7)
         logout_btn = tk.Button(self, text='Logout', bd=3, width=10, command=self.logout, font=font_fam)
-        self.canvas.create_window(x-450, y-150, anchor="nw", window=logout_btn)
+        self.canvas.create_window(x - 450, y - 150, anchor="nw", window=logout_btn)
         top_players = self.db.top_10()
         dropdown = 270
         for user in top_players:
@@ -220,7 +220,7 @@ class App(tk.Tk):
             self.difficulty = False
             self.pve_screen()
 
-# ----------------------------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------------------------------------
     # δημιουργία ταμπλό PvP
     def pvp_screen(self):
         self.canvas.destroy()
@@ -228,7 +228,7 @@ class App(tk.Tk):
         self.canvas = Canvas(width=1280, height=640)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.create_image(0, 0, image=self.bg, anchor="nw")
-        exit_button = tk.Button(text='Exit', bd=5, width=3, command = self.exit, font=font_fam, highlightcolor="black")
+        exit_button = tk.Button(text='Exit', bd=5, width=3, command=self.exit, font=font_fam, highlightcolor="black")
         self.canvas.create_window(12, 20, anchor="nw", window=exit_button)
         self.canvas.create_line(82.8, 0, 82.8, 640, fill="black", width=2.5)
 
@@ -276,7 +276,8 @@ class App(tk.Tk):
             image = tk.PhotoImage(file="white.png")
             self.images.append(image)
             self.image_items.append(
-            self.canvas.create_image(coord_list_copy[0], coord_list_copy[2], image=image, anchor="nw", state="hidden"))
+                self.canvas.create_image(coord_list_copy[0], coord_list_copy[2], image=image, anchor="nw",
+                                         state="hidden"))
 
     # δημιουργία ταμπλό (γραμμές x στήλες)
     def create_button_array(self):
@@ -376,7 +377,7 @@ class App(tk.Tk):
                 image_item = self.image_items[counter]
                 self.canvas.itemconfigure(image_item, state="hidden")
 
-#------------------------------------------Game Mode ------------------------------------------------------------------
+    # ------------------------------------------Game Mode ------------------------------------------------------------------
     # παίζει ο παίκτης και γίνεται έλεγχος για νικητή
     def play_pvp(self, user_choice):
         if self.can_play:
@@ -415,7 +416,7 @@ class App(tk.Tk):
             self.upd_db()
             self.end_screen()
 
-     # κίνηση υπολογιστή
+    # κίνηση υπολογιστή
     def make_bot_turn(self):
         if not self.can_play:
             if self.difficulty:
@@ -468,7 +469,7 @@ class App(tk.Tk):
         root.after(ms, lambda: var.set(1))
         root.wait_variable(var)
 
-# ------------------------------------end screen -----------------------------------------------------------------
+    # ------------------------------------end screen -----------------------------------------------------------------
     # εμφάνιση νικητή ή ισοπαλίας και επιλογή επιστροφής στο Main Menu
     def end_screen(self):
         self.canvas.delete("all")
@@ -484,7 +485,8 @@ class App(tk.Tk):
                 self.canvas.create_text(632, 250, text=f"You Lose!", font=font_fam3, anchor="center", fill="black")
             else:
                 self.canvas.create_text(632, 220, text=f"Winner:", font=font_fam3, anchor="center", fill="black")
-                self.canvas.create_text(632, 320, text=f"{self.username2}", font=font_fam4, anchor="center", fill="black")
+                self.canvas.create_text(632, 320, text=f"{self.username2}", font=font_fam4, anchor="center",
+                                        fill="black")
         else:
             self.canvas.create_text(632, 220, text=f"Winner:", font=font_fam3, anchor="center", fill="black")
             self.canvas.create_text(632, 320, text=f"{self.username}", font=font_fam4, anchor="center", fill="black")
@@ -503,7 +505,7 @@ class App(tk.Tk):
 
     # έξοδος από την εφαρμογή
     def exit(self):
-        if os.path.exists(self.file_path):
+        if os.path.exists(self.file_path) and not self.remem.get():
             os.remove(self.file_path)
         self.db.close_db()
         self.destroy()
